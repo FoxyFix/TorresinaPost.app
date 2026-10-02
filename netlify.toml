@@ -1,0 +1,23 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Destinazione di "Condividi" dal telefono
+[[redirects]]
+  from = "/condividi"
+  to = "/index.html"
+  status = 200
+
+# Il service worker deve aggiornarsi subito
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "no-cache"

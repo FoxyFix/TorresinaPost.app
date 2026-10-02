@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Torresina, la bacheca del quartiere</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EFE9DC;--surface:#FFFFFF;--ink:#2A1E18;--muted:#6B5D50;--line:#DED4C2;
+  --green:#96462C;--on-green:#FFFFFF;--green-soft:#F2E0D5;
+  --sun:#A8884B;--sun-soft:#EDE3CD;
+  --alert:#C0261B;--on-alert:#FFFFFF;--alert-soft:#FBE0DC;
+  --ok:#4E6B3A;--ok-soft:#E1E9D6;--mortar:#E9DFCB;--brick:#96462C;--trim:#FFFFFF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1B1411;--surface:#261D18;--ink:#F1E9DE;--muted:#B3A493;--line:#3B2F27;
+    --green:#E0896A;--on-green:#1B1411;--green-soft:#3A241B;
+    --sun:#D8BD85;--sun-soft:#3A3120;
+    --alert:#FF7B69;--on-alert:#1B1411;--alert-soft:#45201A;
+    --ok:#A3C586;--ok-soft:#26301E;--mortar:#2A1E18;--brick:#A9573A;--trim:#EFE6D8;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B1411;--surface:#261D18;--ink:#F1E9DE;--muted:#B3A493;--line:#3B2F27;
+    --green:#E0896A;--on-green:#1B1411;--green-soft:#3A241B;
+    --sun:#D8BD85;--sun-soft:#3A3120;
+    --alert:#FF7B69;--on-alert:#1B1411;--alert-soft:#45201A;
+    --ok:#A3C586;--ok-soft:#26301E;--mortar:#2A1E18;--brick:#A9573A;--trim:#EFE6D8;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
+  font:17px/1.5 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3,.display{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;margin:0;letter-spacing:-.01em}
+button{font:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.wrap{max-width:560px;margin:0 auto;padding:0 18px 120px}
+
+/* Header */
+.hero{padding:30px 0 4px}
+.wordmark{font-size:clamp(52px,16vw,76px);font-weight:800;line-height:.88;letter-spacing:-.04em;color:var(--green)}
+.hero p{margin:12px 0 0;color:var(--muted);max-width:30ch}
+.skyline{display:block;width:100%;height:auto;margin-top:22px}
+.k-brick{fill:var(--brick)}
+.k-mortar{stroke:var(--mortar);stroke-width:.55;fill:none;opacity:.55}
+.k-white{fill:var(--trim)}
+.k-rail{fill:var(--trim);stroke:var(--line);stroke-width:.5}
+.k-trav{fill:var(--sun-soft);stroke:var(--sun);stroke-width:.4}
+.k-stair{fill:none;stroke:var(--trim);stroke-width:2.2;stroke-linejoin:round}
+.k-win{fill:var(--ink);opacity:.55}
+.k-tree{fill:var(--ok);opacity:.8}
+.pagehead{padding:28px 0 16px}
+.pagehead h1{font-size:36px;font-weight:800;color:var(--green)}
+.sub{margin:6px 0 0;color:var(--muted)}
+
+/* Sections */
+.section{margin-top:28px}
+.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
+.section-head h2{font-size:23px;font-weight:600}
+.count{font-weight:700;color:var(--muted)}
+.link{white-space:nowrap;background:none;border:0;color:var(--green);font-weight:700;cursor:pointer;padding:8px 0;text-decoration:underline;text-underline-offset:3px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--muted);margin:0}
+.note b{color:var(--ink)}
+.note p{margin:0 0 12px}
+
+.banner{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:22px;
+  background:var(--sun-soft);border:0;border-radius:14px;padding:14px 16px;color:var(--ink);cursor:pointer;text-align:left}
+.banner span{color:var(--green);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
+/* Alerts */
+.alert{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:var(--alert-soft);
+  border:1px solid transparent;border-radius:14px;padding:12px 14px;color:var(--ink);cursor:pointer}
+.alert.info{background:var(--surface);border-color:var(--line)}
+.alert .dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--alert);margin-top:8px}
+.alert.info .dot{background:var(--muted)}
+.alert b{display:block;line-height:1.3}
+.alert small{color:var(--muted);font-size:14px}
+
+/* Events */
+.ev{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center;width:100%;text-align:left;
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;color:var(--ink);cursor:pointer}
+.datebox{display:flex;flex-direction:column;align-items:center;background:var(--sun-soft);border-radius:12px;padding:7px 0 8px}
+.datebox .d{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:30px;font-weight:800;line-height:1}
+.datebox .m{font-size:13px;color:var(--muted)}
+.ev b{display:block;line-height:1.3}
+.ev small{display:block;color:var(--muted);font-size:14px;margin-top:2px}
+
+/* Calendar */
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px 12px 10px}
+.cal-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 10px}
+.cal-top h2{font-size:23px;font-weight:600}
+.cal-top h2::first-letter{text-transform:uppercase}
+.navs{display:flex;gap:8px}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);
+  display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn svg{width:20px;height:20px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.wd{font-size:13px;color:var(--muted);padding:2px 0 6px}
+.day{aspect-ratio:1;border:0;background:none;border-radius:12px;color:var(--ink);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:17px}
+.day.out{visibility:hidden}
+.day.past{color:var(--muted)}
+.day.today{box-shadow:inset 0 0 0 2px var(--green);font-weight:700}
+.day.sel{background:var(--green);color:var(--on-green);font-weight:700}
+.dots{display:flex;gap:3px;height:6px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--sun)}
+.day.sel .dots i{background:var(--on-green)}
+.list-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:22px 0 10px}
+.list-head h2{font-size:21px;font-weight:600}
+.list-head h2::first-letter{text-transform:uppercase}
+
+/* Buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border-radius:14px;border:0;
+  font-weight:700;text-decoration:none;cursor:pointer;padding:0 16px;text-align:center;line-height:1.2}
+.btn.primary{background:var(--green);color:var(--on-green)}
+.btn.secondary{background:var(--green-soft);color:var(--ink)}
+.btn.danger{background:var(--alert-soft);color:var(--alert)}
+.btn.block{width:100%}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.btn-row.one{grid-template-columns:1fr}
+
+/* Tags */
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--sun-soft);color:var(--ink)}
+.tag.alert{background:var(--alert-soft);color:var(--alert)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.no{background:var(--alert-soft);color:var(--alert)}
+
+/* Cards (queue, my posts, businesses) */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.card-top small{color:var(--muted);font-size:14px}
+.card h3{font-size:19px;font-weight:600;line-height:1.25}
+.card .meta{color:var(--muted);font-size:15px;margin:4px 0 8px}
+.card p{margin:6px 0}
+.card .btn-row{margin:12px 0 2px}
+.mine{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-align:left;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--ink);cursor:pointer}
+.mine b{display:block;line-height:1.3}
+.mine small{color:var(--muted);font-size:14px}
+.cat{color:var(--muted);font-size:15px}
+.hours{font-size:15px}
+.offer{display:inline-block;background:var(--sun-soft);border-radius:10px;padding:6px 10px;font-size:15px}
+.card .btn{margin-top:12px}
+
+.src{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin:0 0 8px}
+.src b{color:var(--alert)}
+.src-badge{background:var(--ink);color:var(--bg);border-radius:6px;padding:2px 8px;font-weight:700;font-size:12px}
+.src-link{font-size:14px;color:var(--muted)}
+.card-top .tag{flex:none}
+.miss{color:var(--alert)}
+
+/* Form */
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--green-soft);border-radius:14px;padding:4px;gap:4px;margin-bottom:18px}
+.seg button{border:0;background:none;font-weight:700;color:var(--ink);min-height:46px;border-radius:10px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.field{display:block;margin-bottom:14px}
+.field>span{display:block;font-weight:700;margin-bottom:6px}
+.field>span em{font-style:normal;font-weight:400;color:var(--muted)}
+.field input,.field textarea{width:100%;font:inherit;color:var(--ink);background:var(--surface);
+  border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-height:52px}
+.field textarea{min-height:120px;resize:vertical}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.check{display:flex;gap:12px;align-items:flex-start;margin:4px 0 8px;font-size:16px;cursor:pointer}
+.check input{width:24px;height:24px;flex:none;accent-color:var(--green);margin:0}
+.check small{color:var(--muted);font-size:14px}
+.err{color:var(--alert);font-weight:700;min-height:1.5em;margin:10px 0}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+
+/* Sheet */
+.scrim{position:fixed;inset:0;background:rgba(27,18,14,.5);z-index:40;display:none}
+.scrim.open{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:560px;margin:0 auto;background:var(--surface);
+  border-radius:24px 24px 0 0;max-height:90%;overflow-y:auto;
+  padding:10px 20px calc(24px + env(safe-area-inset-bottom,0px));
+  transform:translateY(100%);visibility:hidden;transition:transform .26s ease,visibility 0s linear .26s}
+.sheet.open{transform:none;visibility:visible;transition:transform .26s ease}
+.grab{width:42px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+.sheet-top{display:flex;justify-content:space-between;align-items:center}
+.sheet-title{font-size:28px;font-weight:800;line-height:1.1;margin:10px 0 6px}
+.sheet .meta{color:var(--muted);margin:0 0 16px}
+.sheet .meta b{color:var(--ink)}
+.place{border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+.map{display:block;width:100%;height:auto}
+.m-bg{fill:var(--sun-soft)}
+.m-park{fill:var(--ok);opacity:.22}
+.m-road{stroke:var(--surface);stroke-width:9;fill:none;stroke-linecap:round}
+.m-pin{fill:var(--alert)}
+.m-dot{fill:var(--surface)}
+.place-txt{padding:10px 14px 12px}
+.place-txt b{display:block}
+.place-txt span{color:var(--muted);font-size:15px}
+.place-txt small{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+.desc{white-space:pre-line;margin:4px 0 18px}
+.rules p{margin:0 0 10px}
+
+/* Tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar-inner{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tab{border:0;background:none;color:var(--muted);font-size:12px;padding:8px 0 10px;display:flex;flex-direction:column;
+  align-items:center;gap:2px;cursor:pointer;position:relative;min-height:60px}
+.tab svg{width:25px;height:25px}
+.tab[aria-current="page"]{color:var(--green);font-weight:700}
+.tab .plus{width:52px;height:52px;border-radius:50%;background:var(--green);color:var(--on-green);display:grid;place-items:center;
+  margin-top:-22px;border:4px solid var(--bg)}
+.tab .plus svg{width:24px;height:24px}
+.badge[hidden]{display:none}
+.badge{position:absolute;top:4px;left:calc(50% + 6px);background:var(--alert);color:var(--on-alert);font-size:11px;font-weight:700;
+  min-width:19px;height:19px;border-radius:10px;display:grid;place-items:center;padding:0 5px}
+
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+  background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:700;z-index:60;
+  opacity:0;pointer-events:none;transition:opacity .2s;width:max-content;max-width:88vw;text-align:center}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){.sheet,.sheet.open,.toast{transition:none}}
+</style>
+</head>
+<body>
+<main class="wrap" id="main"></main>
+
+<nav class="tabbar" aria-label="Sezioni">
+  <div class="tabbar-inner">
+    <button class="tab" data-action="go" data-view="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
+      Bacheca</button>
+    <button class="tab" data-action="go" data-view="eventi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+      Eventi</button>
+    <button class="tab" data-action="go" data-view="proponi" aria-label="Proponi">
+      <span class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+      Proponi</button>
+    <button class="tab" data-action="go" data-view="attivita">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9l1.5-5h13L20 9"/><path d="M4 9h16v2a3 3 0 0 1-5.3 2 3 3 0 0 1-5.4 0A3 3 0 0 1 4 11z"/><path d="M5 14v6h14v-6"/></svg>
+      Attività</button>
+    <button class="tab" data-action="go" data-view="profilo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+      Profilo<span class="badge" id="badge" hidden></span></button>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim" data-action="close"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+const KEY='torresina-demo-v2';
+const pad=n=>String(n).padStart(2,'0');
+const dayKey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parseKey=k=>{const [a,b,c]=k.split('-').map(Number);return new Date(a,b-1,c)};
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function at(days,h,m){const d=new Date();d.setHours(h,m||0,0,0);d.setDate(d.getDate()+days);return d.toISOString()}
+function ago(hours){return new Date(Date.now()-hours*3600000).toISOString()}
+
+const fDay=new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long'});
+const fWeekday=new Intl.DateTimeFormat('it-IT',{weekday:'long'});
+const fTime=new Intl.DateTimeFormat('it-IT',{hour:'2-digit',minute:'2-digit'});
+const fMon=new Intl.DateTimeFormat('it-IT',{month:'short'});
+const fMonthYear=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'});
+
+function seed(){
+  return {role:'residente',trusted:false,posts:[
+    {id:'a1',type:'alert',status:'approvato',urgent:true,title:'Attenzione alla truffa del finto tecnico del gas',start:ago(2),author:'Admin',
+     desc:'Due persone suonano ai citofoni dicendo di dover controllare il contatore. Nessuna azienda manda tecnici senza preavviso: non aprite e chiamate il 112.'},
+    {id:'a2',type:'alert',status:'approvato',urgent:false,title:'Lavori sulla rete idrica: possibili cali di pressione',start:ago(26),author:'Comitato di quartiere',
+     desc:'Nei prossimi giorni, dalle 8 alle 14, possibili cali di pressione dell\'acqua nelle palazzine lato nord. Conviene tenere da parte un po\' d\'acqua.'},
+    {id:'a3',type:'alert',status:'approvato',urgent:false,title:'Trovato gatto grigio con collarino rosso',start:ago(50),place:'Vicino ai box auto',author:'Residente',
+     desc:'Molto docile, ora è al sicuro. Se è vostro scrivete agli admin e vi mettiamo in contatto.'},
+    {id:'e0',type:'evento',status:'approvato',title:'Merenda di fine estate',start:at(-3,16,30),end:at(-3,19,0),place:'Area verde di Torresina 2',address:'Torresina, Roma',author:'Comitato di quartiere',
+     desc:'Grazie a tutti quelli che sono passati!'},
+    {id:'e1',type:'evento',status:'approvato',title:'Camminata di gruppo',start:at(2,8,30),end:at(2,9,45),place:'Ritrovo al Centro Commerciale Torresina',address:'Via Andrea Barbato 31, Roma',author:'Residente',
+     desc:'Un\'ora di passeggiata a passo tranquillo, adatta a tutti. Si parte puntuali dall\'ingresso principale.'},
+    {id:'e2',type:'evento',status:'approvato',title:'Raccolta tappi e abiti usati',start:at(3,10,0),end:at(3,13,0),place:'Centro Commerciale Torresina',address:'Via Andrea Barbato 31, Roma',author:'Comitato di quartiere',
+     desc:'Portate tappi di plastica e abiti in buono stato: tutto andrà a un\'associazione del Municipio XIV.\nCerchiamo anche due volontari per il banchetto.'},
+    {id:'e3',type:'evento',status:'approvato',title:'Riunione del comitato di quartiere',start:at(5,18,30),end:at(5,20,0),place:'Sala comune di Torresina 2',address:'Torresina, Roma',author:'Comitato di quartiere',
+     desc:'Ordine del giorno: illuminazione dei vialetti, area cani, idee per le feste di Natale. Aperta a tutti i residenti.'},
+    {id:'e4',type:'evento',status:'approvato',title:'Pulizia dell\'area verde',start:at(8,9,30),end:at(8,12,0),place:'Area verde di Torresina 2',address:'Torresina, Roma',author:'Residente',
+     desc:'Guanti e sacchi li portiamo noi. Basta venire, anche solo per un\'ora. Ritrovo all\'ingresso vicino ai giochi.'},
+    {id:'e5',type:'evento',status:'approvato',title:'Mercatino del baratto per bambini',start:at(12,16,0),end:at(12,19,0),place:'Piazzetta del quartiere',address:'Torresina, Roma',author:'Residente',
+     desc:'Giochi, libri e vestiti da 0 a 12 anni: si scambia, non si vende. Ogni bambino porta al massimo 5 oggetti.'},
+    {id:'e6',type:'evento',status:'approvato',title:'Castagnata di quartiere',start:at(19,17,0),end:at(19,20,0),place:'Area verde di Torresina 2',address:'Torresina, Roma',author:'Comitato di quartiere',
+     desc:'Castagne, vin brulé per i grandi e cioccolata calda per i piccoli. Chi ha una padella per le caldarroste la porti!'},
+    {id:'s1',type:'evento',status:'in_attesa',title:'Laboratorio di zucche per Halloween',start:at(27,16,0),end:at(27,18,0),place:'Ludoteca di quartiere',address:'Torresina, Roma',author:'@ludoteca.torresina',fonte:'instagram',ai:0.9,
+     desc:'Laboratorio per bambini dai 5 anni: si intagliano e decorano zucche. Posti limitati, prenotazione in ludoteca.'},
+    {id:'s2',type:'alert',status:'in_attesa',urgent:false,title:'Chiusura temporanea del vialetto pedonale',start:ago(5),place:'Vialetto pedonale',author:'un membro del gruppo',fonte:'telegram',ai:0.7,
+     desc:'Per potatura degli alberi il vialetto resterà chiuso per alcune mattine. Data esatta non indicata nel messaggio originale.'},
+    {id:'s3',type:'evento',status:'in_attesa',title:'Raccolta firme per l\'area cani',start:at(10,10,0),end:null,place:null,author:'Luca, residente',fonte:'condivisione',ai:0.5,
+     desc:'Banchetto per la raccolta firme per un\'area cani recintata. Luogo non indicato nel post: da completare.'},
+    {id:'p1',type:'evento',status:'in_attesa',title:'Torneo di burraco solidale',start:at(15,16,0),end:at(15,19,30),place:'Sala comune di Torresina 2',address:'Torresina, Roma',author:'Giulia R.',
+     desc:'Quota 5 € a coppia, il ricavato va alla ludoteca del quartiere.'},
+    {id:'p2',type:'alert',status:'in_attesa',urgent:false,title:'Lampione spento sul vialetto pedonale',start:ago(3),author:'Marco T.',
+     desc:'Da tre sere il lampione a metà vialetto è spento e la sera è molto buio. Qualcuno ha già segnalato al Comune?'}
+  ]};
+}
+const BIZ=[
+  {n:'Forno La Spiga',c:'Panificio',d:'Pane a lievito madre, pizza al taglio e dolci della domenica.',h:'Lun–sab 7:00–14:00 e 16:30–19:30',o:'Ai residenti: un supplì omaggio ogni 10 € di spesa'},
+  {n:'Bar Giardino',c:'Bar e colazioni',d:'Colazioni, pranzi veloci e aperitivo con tavolini all\'aperto.',h:'Tutti i giorni 6:30–21:00'},
+  {n:'Ferramenta Morelli',c:'Ferramenta',d:'Chiavi, piccole riparazioni e tutto per casa e balcone.',h:'Lun–sab 8:30–13:00 e 16:00–19:30'},
+  {n:'Stile Libero',c:'Parrucchiere',d:'Taglio e piega su appuntamento, anche il sabato pomeriggio.',h:'Mar–sab 9:00–19:00'}
+];
+const RULES=`<div class="rules"><p>Scrivi solo di cose che riguardano il quartiere.</p>
+<p>Niente nomi, cognomi, targhe o foto di persone riconoscibili, anche negli avvisi.</p>
+<p>Per le emergenze chiama il 112: l'app non sostituisce i soccorsi.</p>
+<p>Niente pubblicità nei post: le attività hanno la loro sezione.</p>
+<p>Gli admin possono modificare o rifiutare i post che non rispettano queste regole.</p></div>`;
+const SKYLINE=`<svg class="skyline" viewBox="0 0 360 76" aria-hidden="true"><defs><pattern id="cortina" width="12" height="6" patternUnits="userSpaceOnUse"><rect width="12" height="6" class="k-brick"/><path class="k-mortar" d="M0 3H12M0 6H12M6 0V3M0 3V6M12 3V6"/></pattern></defs><rect x="0" y="26" width="66" height="50" fill="url(#cortina)"/><rect class="k-win" x="5" y="32.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="16" y="32.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="27" y="32.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="38" y="32.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="49" y="32.0" width="5" height="8.0" rx="1"/><rect class="k-rail" x="-1" y="40.0" width="68" height="3"/><rect class="k-win" x="5" y="46.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="16" y="46.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="27" y="46.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="38" y="46.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="49" y="46.0" width="5" height="8.0" rx="1"/><rect class="k-rail" x="-1" y="54.0" width="68" height="3"/><rect class="k-win" x="5" y="60.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="16" y="60.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="27" y="60.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="38" y="60.0" width="5" height="8.0" rx="1"/><rect class="k-win" x="49" y="60.0" width="5" height="8.0" rx="1"/><rect class="k-rail" x="-1" y="68.0" width="68" height="3"/><rect class="k-trav" x="0" y="70" width="66" height="6"/><rect x="68" y="20" width="18" height="56" class="k-white" opacity=".35"/><polyline class="k-stair" points="68,76.0 86,64.8 68,53.6 86,42.4 68,31.2 86,20.0"/><rect x="68" y="20" width="1.6" height="56" class="k-white"/><rect x="84.4" y="20" width="1.6" height="56" class="k-white"/><rect x="88" y="8" width="62" height="68" fill="url(#cortina)"/><rect class="k-win" x="93" y="14.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="104" y="14.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="115" y="14.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="126" y="14.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="137" y="14.0" width="5" height="9.0" rx="1"/><rect class="k-rail" x="87" y="23.0" width="64" height="3"/><rect class="k-win" x="93" y="29.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="104" y="29.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="115" y="29.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="126" y="29.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="137" y="29.0" width="5" height="9.0" rx="1"/><rect class="k-rail" x="87" y="38.0" width="64" height="3"/><rect class="k-win" x="93" y="44.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="104" y="44.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="115" y="44.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="126" y="44.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="137" y="44.0" width="5" height="9.0" rx="1"/><rect class="k-rail" x="87" y="53.0" width="64" height="3"/><rect class="k-win" x="93" y="59.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="104" y="59.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="115" y="59.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="126" y="59.0" width="5" height="9.0" rx="1"/><rect class="k-win" x="137" y="59.0" width="5" height="9.0" rx="1"/><rect class="k-rail" x="87" y="68.0" width="64" height="3"/><rect class="k-trav" x="88" y="70" width="62" height="6"/><rect x="152" y="14" width="18" height="62" class="k-white" opacity=".35"/><polyline class="k-stair" points="152,76.0 170,65.7 152,55.3 170,45.0 152,34.7 170,24.3 152,14.0"/><rect x="152" y="14" width="1.6" height="62" class="k-white"/><rect x="168.4" y="14" width="1.6" height="62" class="k-white"/><rect x="172" y="30" width="78" height="46" fill="url(#cortina)"/><rect class="k-win" x="177" y="36.0" width="5" height="6.7" rx="1"/><rect class="k-win" x="188" y="36.0" width="5" height="6.7" rx="1"/><rect class="k-win" x="199" y="36.0" width="5" height="6.7" rx="1"/><rect class="k-win" x="210" y="36.0" width="5" height="6.7" rx="1"/><rect class="k-win" x="221" y="36.0" width="5" height="6.7" rx="1"/><rect class="k-win" x="232" y="36.0" width="5" height="6.7" rx="1"/><rect class="k-win" x="243" y="36.0" width="5" height="6.7" rx="1"/><rect class="k-rail" x="171" y="42.7" width="80" height="3"/><rect class="k-win" x="177" y="48.7" width="5" height="6.7" rx="1"/><rect class="k-win" x="188" y="48.7" width="5" height="6.7" rx="1"/><rect class="k-win" x="199" y="48.7" width="5" height="6.7" rx="1"/><rect class="k-win" x="210" y="48.7" width="5" height="6.7" rx="1"/><rect class="k-win" x="221" y="48.7" width="5" height="6.7" rx="1"/><rect class="k-win" x="232" y="48.7" width="5" height="6.7" rx="1"/><rect class="k-win" x="243" y="48.7" width="5" height="6.7" rx="1"/><rect class="k-rail" x="171" y="55.3" width="80" height="3"/><rect class="k-win" x="177" y="61.3" width="5" height="6.7" rx="1"/><rect class="k-win" x="188" y="61.3" width="5" height="6.7" rx="1"/><rect class="k-win" x="199" y="61.3" width="5" height="6.7" rx="1"/><rect class="k-win" x="210" y="61.3" width="5" height="6.7" rx="1"/><rect class="k-win" x="221" y="61.3" width="5" height="6.7" rx="1"/><rect class="k-win" x="232" y="61.3" width="5" height="6.7" rx="1"/><rect class="k-win" x="243" y="61.3" width="5" height="6.7" rx="1"/><rect class="k-rail" x="171" y="68.0" width="80" height="3"/><rect class="k-trav" x="172" y="70" width="78" height="6"/><circle class="k-tree" cx="264" cy="54" r="11"/><rect class="k-trav" x="262" y="62" width="4" height="14"/><rect x="280" y="18" width="58" height="58" fill="url(#cortina)"/><rect class="k-win" x="285" y="24.0" width="5" height="6.5" rx="1"/><rect class="k-win" x="296" y="24.0" width="5" height="6.5" rx="1"/><rect class="k-win" x="307" y="24.0" width="5" height="6.5" rx="1"/><rect class="k-win" x="318" y="24.0" width="5" height="6.5" rx="1"/><rect class="k-win" x="329" y="24.0" width="5" height="6.5" rx="1"/><rect class="k-rail" x="279" y="30.5" width="60" height="3"/><rect class="k-win" x="285" y="36.5" width="5" height="6.5" rx="1"/><rect class="k-win" x="296" y="36.5" width="5" height="6.5" rx="1"/><rect class="k-win" x="307" y="36.5" width="5" height="6.5" rx="1"/><rect class="k-win" x="318" y="36.5" width="5" height="6.5" rx="1"/><rect class="k-win" x="329" y="36.5" width="5" height="6.5" rx="1"/><rect class="k-rail" x="279" y="43.0" width="60" height="3"/><rect class="k-win" x="285" y="49.0" width="5" height="6.5" rx="1"/><rect class="k-win" x="296" y="49.0" width="5" height="6.5" rx="1"/><rect class="k-win" x="307" y="49.0" width="5" height="6.5" rx="1"/><rect class="k-win" x="318" y="49.0" width="5" height="6.5" rx="1"/><rect class="k-win" x="329" y="49.0" width="5" height="6.5" rx="1"/><rect class="k-rail" x="279" y="55.5" width="60" height="3"/><rect class="k-win" x="285" y="61.5" width="5" height="6.5" rx="1"/><rect class="k-win" x="296" y="61.5" width="5" height="6.5" rx="1"/><rect class="k-win" x="307" y="61.5" width="5" height="6.5" rx="1"/><rect class="k-win" x="318" y="61.5" width="5" height="6.5" rx="1"/><rect class="k-win" x="329" y="61.5" width="5" height="6.5" rx="1"/><rect class="k-rail" x="279" y="68.0" width="60" height="3"/><rect class="k-trav" x="280" y="70" width="58" height="6"/><rect x="340" y="24" width="20" height="52" class="k-white" opacity=".35"/><polyline class="k-stair" points="340,76.0 360,65.6 340,55.2 360,44.8 340,34.4 360,24.0"/><rect x="340" y="24" width="1.6" height="52" class="k-white"/><rect x="358.4" y="24" width="1.6" height="52" class="k-white"/></svg>`;
+
+let S;
+function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);if(S&&Array.isArray(S.posts))return}}catch(e){}S=seed()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+let view='home';
+const t0=new Date();
+let cal={y:t0.getFullYear(),m:t0.getMonth(),sel:null};
+let form={type:'evento',v:{}};
+
+const approved=()=>S.posts.filter(p=>p.status==='approvato');
+const pending=()=>S.posts.filter(p=>p.status==='in_attesa');
+const events=()=>approved().filter(p=>p.type==='evento').sort((a,b)=>new Date(a.start)-new Date(b.start));
+const alerts=()=>approved().filter(p=>p.type==='alert').sort((a,b)=>new Date(b.start)-new Date(a.start));
+const startOfToday=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+
+function when(p){const s=new Date(p.start),e=p.end?new Date(p.end):null;return cap(fDay.format(s))+', '+fTime.format(s)+(e?'–'+fTime.format(e):'')}
+function since(iso){const m=Math.round((Date.now()-new Date(iso))/60000);
+  if(m<2)return 'adesso';if(m<60)return m+' minuti fa';const h=Math.round(m/60);
+  if(h<24)return h===1?'un\'ora fa':h+' ore fa';const d=Math.round(h/24);return d===1?'ieri':d+' giorni fa'}
+function placeQuery(p){const q=[p.place,p.address].filter(Boolean).join(', ');return /roma/i.test(q)?q:q+', Torresina, Roma'}
+const mapsUrl=q=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+function gcal(p){const f=iso=>{const d=new Date(iso);return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'T'+pad(d.getHours())+pad(d.getMinutes())+'00'};
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(p.title)+
+  '&dates='+f(p.start)+'/'+f(p.end||p.start)+'&ctz=Europe/Rome&details='+encodeURIComponent(p.desc)+'&location='+encodeURIComponent(placeQuery(p))}
+
+function miniMap(s){let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;
+  const r=()=>(h=(h*1664525+1013904223)>>>0)/4294967296;let roads='';
+  for(let i=0;i<3;i++){const y=20+r()*120;roads+=`<path d="M-10 ${y|0} L330 ${(y+(r()-.5)*60)|0}"/>`}
+  for(let i=0;i<3;i++){const x=30+r()*260;roads+=`<path d="M${x|0} -10 L${(x+(r()-.5)*80)|0} 170"/>`}
+  const px=20+r()*180,py=10+r()*70;
+  return `<svg class="map" viewBox="0 0 320 150" aria-hidden="true"><rect width="320" height="150" class="m-bg"/>
+  <rect x="${px|0}" y="${py|0}" width="110" height="64" rx="20" class="m-park"/><g class="m-road">${roads}</g>
+  <g transform="translate(160 96)"><path class="m-pin" d="M0 0C-9-12-15-19-15-27a15 15 0 0 1 30 0C15-19 9-12 0 0z"/><circle cy="-27" r="5.5" class="m-dot"/></g></svg>`}
+
+/* ---------- Views ---------- */
+function evCard(p){const s=new Date(p.start);
+  return `<button class="ev" data-action="open" data-id="${p.id}"><span class="datebox"><span class="d">${s.getDate()}</span><span class="m">${fMon.format(s).replace('.','')}</span></span>
+  <span><b>${esc(p.title)}</b><small>${cap(fWeekday.format(s))}, ${fTime.format(s)}</small><small>${esc(p.place)}</small></span></button>`}
+function alertRow(p){
+  return `<button class="alert ${p.urgent?'':'info'}" data-action="open" data-id="${p.id}"><span class="dot"></span>
+  <span><b>${esc(p.title)}</b><small>${p.urgent?'Urgente, ':''}${since(p.start)}</small></span></button>`}
+
+function vHome(){
+  const today=startOfToday();
+  const up=events().filter(p=>new Date(p.end||p.start)>=today).slice(0,3);
+  const al=alerts().slice(0,4);
+  const pend=S.role==='admin'?pending().length:0;
+  return `<header class="hero"><h1 class="wordmark">Torresina</h1><p>Avvisi, eventi e attività del quartiere, tutti in un posto.</p>${SKYLINE}</header>
+  ${pend?`<button class="banner" data-action="go" data-view="profilo"><b>${pend===1?'1 post da approvare':pend+' post da approvare'}</b><span>Apri</span></button>`:''}
+  <section class="section"><div class="section-head"><h2>Avvisi</h2></div>
+  ${al.length?`<div class="stack">${al.map(alertRow).join('')}</div>`:`<p class="note">Nessun avviso al momento.</p>`}</section>
+  <section class="section"><div class="section-head"><h2>Prossimi eventi</h2><button class="link" data-action="go" data-view="eventi">Apri il calendario</button></div>
+  ${up.length?`<div class="stack">${up.map(evCard).join('')}</div>`:`<p class="note">Nessun evento in programma. <button class="link" data-action="go" data-view="proponi">Proponi il primo</button></p>`}</section>`;
+}
+
+function vEventi(){
+  const {y,m,sel}=cal;const first=new Date(y,m,1);const offset=(first.getDay()+6)%7;const days=new Date(y,m+1,0).getDate();
+  const evs=events();const byDay={};evs.forEach(p=>{const k=dayKey(new Date(p.start));(byDay[k]=byDay[k]||[]).push(p)});
+  const todayK=dayKey(new Date());const today=startOfToday();
+  const isThisMonth=y===today.getFullYear()&&m===today.getMonth();
+  let cells=['L','M','M','G','V','S','D'].map((d,i)=>`<span class="wd" aria-hidden="true">${d}</span>`).join('');
+  for(let i=0;i<offset;i++)cells+='<span class="day out" aria-hidden="true"></span>';
+  for(let d=1;d<=days;d++){const dt=new Date(y,m,d);const k=dayKey(dt);const n=(byDay[k]||[]).length;
+    const cls=['day'];if(k===todayK)cls.push('today');if(k===sel)cls.push('sel');if(dt<today)cls.push('past');
+    cells+=`<button class="${cls.join(' ')}" data-action="day" data-day="${k}" aria-pressed="${k===sel}" aria-label="${fDay.format(dt)}${n?', '+n+(n===1?' evento':' eventi'):''}"><span>${d}</span><span class="dots">${'<i></i>'.repeat(Math.min(n,3))}</span></button>`}
+  let list,title,empty;
+  if(sel){list=byDay[sel]||[];title=fDay.format(parseKey(sel));empty=`<div class="note"><p>Nessun evento in questo giorno.</p><button class="btn secondary block" data-action="go" data-view="proponi">Proponi un evento</button></div>`}
+  else{list=evs.filter(p=>{const s=new Date(p.start);return s.getFullYear()===y&&s.getMonth()===m&&new Date(p.end||p.start)>=today});
+    title=isThisMonth?'Da oggi a fine mese':'Eventi di '+fMonthYear.format(first);
+    empty=`<p class="note">Nessun evento ${isThisMonth?'nel resto del mese':'in questo mese'}.</p>`}
+  const chev=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+  return `<header class="pagehead"><h1>Eventi</h1><p class="sub">Tocca un giorno per vedere cosa succede.</p></header>
+  <div class="cal"><div class="cal-top"><h2>${fMonthYear.format(first)}</h2><div class="navs">
+  ${isThisMonth?'':`<button class="link" data-action="today" style="margin-right:4px">Oggi</button>`}
+  <button class="iconbtn" data-action="prev" aria-label="Mese precedente">${chev('M15 5l-7 7 7 7')}</button>
+  <button class="iconbtn" data-action="next" aria-label="Mese successivo">${chev('M9 5l7 7-7 7')}</button></div></div>
+  <div class="grid">${cells}</div></div>
+  <div class="list-head"><h2>${title}</h2>${sel?'<button class="link" data-action="clearday">Tutto il mese</button>':''}</div>
+  ${list.length?`<div class="stack">${list.map(evCard).join('')}</div>`:empty}`;
+}
+
+function vProponi(){
+  if(S.role==='visitatore')return `<header class="pagehead"><h1>Proponi</h1></header>
+  <div class="note"><p>Per proporre un evento o un avviso serve un account del quartiere. Per leggere invece non serve registrarsi.</p>
+  <button class="btn primary block" data-action="login">Accedi con la tua email</button></div>`;
+  const direct=S.role==='admin'||S.trusted;const t=form.type;const today=dayKey(new Date());
+  return `<header class="pagehead"><h1>Proponi</h1><p class="sub">${direct?'Il tuo post verrà pubblicato subito.':'Un admin lo controlla prima di pubblicarlo, di solito in giornata.'}</p></header>
+  <div class="seg" role="group" aria-label="Tipo di post"><button data-action="ftype" data-type="evento" aria-pressed="${t==='evento'}">Evento</button><button data-action="ftype" data-type="alert" aria-pressed="${t==='alert'}">Avviso</button></div>
+  <label class="field"><span>Titolo</span><input id="f-title" maxlength="80" autocomplete="off" placeholder="${t==='evento'?'Es. Castagnata nel parco':'Es. Lampione spento sul vialetto'}"></label>
+  ${t==='evento'?`<label class="field"><span>Giorno</span><input id="f-date" type="date" min="${today}"></label>
+  <div class="row2"><label class="field"><span>Inizio</span><input id="f-start" type="time" value="17:00"></label><label class="field"><span>Fine <em>(facoltativa)</em></span><input id="f-end" type="time" value="19:00"></label></div>`
+  :`<div class="box"><label class="check"><input id="f-urgent" type="checkbox"><span><b>Urgente</b><br><small>Solo per pericoli o problemi che riguardano tutti adesso.</small></span></label></div>`}
+  <label class="field"><span>Dove${t==='evento'?'':' <em>(facoltativo)</em>'}</span><input id="f-place" autocomplete="off" placeholder="Es. Area verde di Torresina 2"></label>
+  <label class="field"><span>Indirizzo per la mappa <em>(facoltativo)</em></span><input id="f-address" autocomplete="off" placeholder="Via e numero civico"></label>
+  <label class="field"><span>Descrizione</span><textarea id="f-desc" placeholder="${t==='evento'?'Cosa si fa, per chi è, cosa portare.':'Cosa succede e dove, senza nomi o targhe.'}"></textarea></label>
+  <label class="check"><input id="f-rules" type="checkbox"><span>Rispetto il regolamento: niente nomi, targhe o volti riconoscibili.</span></label>
+  <button class="link" data-action="rules">Leggi il regolamento</button>
+  <p class="err" id="f-err" role="alert"></p>
+  <button class="btn primary block" data-action="submit">${direct?'Pubblica':'Invia per approvazione'}</button>`;
+}
+
+function vAttivita(){
+  return `<header class="pagehead"><h1>Attività</h1><p class="sub">Negozi e servizi del quartiere. Queste schede sono esempi.</p></header>
+  <div class="stack">${BIZ.map(b=>`<article class="card"><h3>${b.n}</h3><div class="cat">${b.c}</div><p>${b.d}</p><p class="hours">${b.h}</p>
+  ${b.o?`<p class="offer">${b.o}</p>`:''}<a class="btn secondary" href="${mapsUrl(b.n+', Torresina, Roma')}" target="_blank" rel="noopener">Portami lì</a></article>`).join('')}</div>
+  <p class="note" style="margin-top:16px"><b>Hai un'attività a Torresina?</b><br>Presto potrai aggiungere la tua scheda con orari, contatti e offerte per i residenti.</p>`;
+}
+
+const FONTI={instagram:'Instagram',facebook_pagina:'Pagina Facebook',telegram:'Telegram',condivisione:'Condiviso dal telefono'};
+const STATUS={in_attesa:['In attesa',''],approvato:['Pubblicato','ok'],rifiutato:['Non approvato','no']};
+function qCard(p){
+  return `<article class="card"><div class="card-top"><span class="tag ${p.type==='alert'?'alert':''}">${p.type==='evento'?'Evento':(p.urgent?'Avviso urgente':'Avviso')}</span><small>da ${esc(p.author)}</small></div>
+  ${p.fonte?`<p class="src"><span class="src-badge">${FONTI[p.fonte]}</span> Compilato dall'AI${p.ai<0.7?': <b>controlla i dati</b>':''}</p>`:''}
+  <h3>${esc(p.title)}</h3><p class="meta">${p.type==='evento'?when(p)+'<br>'+(p.place?esc(p.place):'<b class="miss">Luogo da completare</b>'):'Inviato '+since(p.start)}</p><p>${esc(p.desc)}</p>
+  ${p.fonte&&p.fonte!=='condivisione'?`<p class="src-link">Collegato al post originale su ${FONTI[p.fonte]}</p>`:''}
+  <div class="btn-row"><button class="btn danger" data-action="reject" data-id="${p.id}">Rifiuta</button><button class="btn primary" data-action="approve" data-id="${p.id}">Approva</button></div></article>`}
+function myRow(p){const [l,c]=STATUS[p.status];
+  return `<button class="mine" data-action="open" data-id="${p.id}"><span><b>${esc(p.title)}</b><small>${p.type==='evento'?when(p):'Avviso, '+since(p.start)}</small></span><span class="tag ${c}">${l}</span></button>`}
+
+function vProfilo(){
+  const roles=[['visitatore','Visitatore'],['residente','Residente'],['admin','Admin']];
+  const mine=S.posts.filter(p=>p.mine).reverse();const q=pending();
+  return `<header class="pagehead"><h1>Profilo</h1><p class="sub">Nel prototipo puoi cambiare ruolo per provare ogni punto di vista.</p></header>
+  <div class="seg" role="group" aria-label="Ruolo">${roles.map(([k,l])=>`<button data-action="role" data-role="${k}" aria-pressed="${S.role===k}">${l}</button>`).join('')}</div>
+  ${S.role==='residente'?`<div class="box"><label class="check"><input type="checkbox" data-action="trusted" ${S.trusted?'checked':''}><span><b>Utente fidato</b><br><small>Lo decide un admin. I post vengono pubblicati senza attesa.</small></span></label></div>`:''}
+  ${S.role==='visitatore'?`<p class="note">Stai guardando l'app come chi non ha un account: può leggere tutto, ma non proporre.</p>`:''}
+  ${S.role==='admin'?`<section class="section"><div class="section-head"><h2>Da approvare</h2><span class="count">${q.length}</span></div>
+  ${q.length?`<div class="stack">${q.map(qCard).join('')}</div>`:`<p class="note">Nessun post in attesa.</p>`}</section>`:''}
+  ${S.role!=='visitatore'?`<section class="section"><div class="section-head"><h2>I miei post</h2></div>
+  ${mine.length?`<div class="stack">${mine.map(myRow).join('')}</div>`:`<p class="note">Non hai ancora proposto nulla. <button class="link" data-action="go" data-view="proponi">Proponi un evento</button></p>`}</section>`:''}
+  <section class="section"><div class="section-head"><h2>Regolamento</h2></div><div class="note">${RULES}</div></section>
+  <button class="btn secondary block" data-action="reset" style="margin-top:24px">Ripristina i dati di esempio</button>`;
+}
+
+const VIEWS={home:vHome,eventi:vEventi,proponi:vProponi,attivita:vAttivita,profilo:vProfilo};
+function render(){
+  document.getElementById('main').innerHTML=VIEWS[view]();
+  document.querySelectorAll('.tab').forEach(t=>{if(t.dataset.view===view)t.setAttribute('aria-current','page');else t.removeAttribute('aria-current')});
+  const n=S.role==='admin'?pending().length:0;const b=document.getElementById('badge');b.hidden=!n;b.textContent=n;
+}
+function go(v){view=v;render();window.scrollTo(0,0)}
+
+/* ---------- Sheet ---------- */
+const sheet=document.getElementById('sheet'),scrim=document.getElementById('scrim');let lastFocus=null;
+const closeIcon=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+function openSheet(html){lastFocus=document.activeElement;sheet.innerHTML=html;sheet.scrollTop=0;sheet.classList.add('open');scrim.classList.add('open');
+  const c=sheet.querySelector('[data-action="close"]');if(c)c.focus()}
+function closeSheet(){sheet.classList.remove('open');scrim.classList.remove('open');if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+function openDetail(id){const p=S.posts.find(x=>x.id===id);if(!p)return;const ev=p.type==='evento';const hasPlace=!!(p.place||p.address);
+  const past=ev&&new Date(p.end||p.start)<new Date();
+  openSheet(`<div class="grab"></div><div class="sheet-top"><span class="tag ${ev?'':'alert'}">${ev?(past?'Evento concluso':'Evento'):(p.urgent?'Avviso urgente':'Avviso')}</span>
+  <button class="iconbtn" data-action="close" aria-label="Chiudi">${closeIcon}</button></div>
+  <h2 class="sheet-title" id="sheet-title">${esc(p.title)}</h2>
+  <p class="meta"><b>${ev?when(p):'Pubblicato '+since(p.start)}</b><br>da ${esc(p.author)}</p>
+  ${hasPlace?`<div class="place">${miniMap(p.id)}<div class="place-txt"><b>${esc(p.place||p.address)}</b><span>${esc(p.address&&p.place?p.address:'Torresina, Roma')}</span><small>Anteprima: nell'app vera qui c'è la mappa interattiva.</small></div></div>`:''}
+  ${hasPlace||(ev&&!past)?`<div class="btn-row ${hasPlace&&ev&&!past?'':'one'}">${hasPlace?`<a class="btn primary" href="${mapsUrl(placeQuery(p))}" target="_blank" rel="noopener">Portami lì</a>`:''}${ev&&!past?`<a class="btn secondary" href="${gcal(p)}" target="_blank" rel="noopener">Aggiungi al calendario</a>`:''}</div>`:'<div style="height:14px"></div>'}
+  <p class="desc">${esc(p.desc)}</p>
+  ${p.status==='approvato'?`<button class="btn secondary block" data-action="share" data-id="${p.id}">Condividi</button>`:`<p class="note">Stato: ${STATUS[p.status][0].toLowerCase()}. Solo tu e gli admin vedete questo post.</p>`}`)}
+function openRules(){openSheet(`<div class="grab"></div><div class="sheet-top"><span class="tag ok">Regolamento</span><button class="iconbtn" data-action="close" aria-label="Chiudi">${closeIcon}</button></div>
+  <h2 class="sheet-title" id="sheet-title">Poche regole, per stare bene tutti</h2>${RULES}`)}
+async function share(id){const p=S.posts.find(x=>x.id===id);if(!p)return;
+  const text=p.title+(p.type==='evento'?' – '+when(p)+(p.place?', '+p.place:''):'')+'\n\nDalla bacheca di Torresina';
+  try{if(navigator.share){await navigator.share({title:p.title,text});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(text);toast('Testo copiato: incollalo nel gruppo')}catch(e){toast('Condivisione non disponibile qui')}}
+
+/* ---------- Form ---------- */
+const val=id=>{const el=document.getElementById(id);return el?el.value.trim():''};
+function keepForm(){['f-title','f-place','f-address','f-desc'].forEach(id=>{const el=document.getElementById(id);if(el)form.v[id]=el.value})}
+function restoreForm(){Object.entries(form.v).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v})}
+function submit(){
+  const t=form.type,title=val('f-title'),place=val('f-place'),address=val('f-address'),desc=val('f-desc');
+  const errEl=document.getElementById('f-err');const err=m=>{errEl.textContent=m};
+  if(!title)return err('Scrivi un titolo.');
+  let start,end=null;
+  if(t==='evento'){const d=val('f-date'),s=val('f-start'),e=val('f-end');
+    if(!d)return err('Scegli il giorno dell\'evento.');if(!s)return err('Indica l\'ora di inizio.');if(!place)return err('Indica dove si svolge.');
+    start=new Date(d+'T'+s);if(e){end=new Date(d+'T'+e);if(end<=start)return err('L\'ora di fine deve venire dopo l\'inizio.')}
+    start=start.toISOString();end=end&&end.toISOString()}
+  else start=new Date().toISOString();
+  if(!desc)return err('Aggiungi una breve descrizione.');
+  if(!document.getElementById('f-rules').checked)return err('Conferma di rispettare il regolamento.');
+  const direct=S.role==='admin'||S.trusted;const urgentEl=document.getElementById('f-urgent');
+  S.posts.push({id:'u'+Date.now(),type:t,status:direct?'approvato':'in_attesa',title,start,end,place,address,desc,urgent:!!(urgentEl&&urgentEl.checked),author:S.role==='admin'?'Admin':'Tu',mine:true});
+  save();form={type:t,v:{}};
+  if(direct){toast('Pubblicato');if(t==='evento'){const s=new Date(start);cal={y:s.getFullYear(),m:s.getMonth(),sel:dayKey(s)};go('eventi')}else go('home')}
+  else{toast('Inviato: lo trovi in Profilo finché non viene approvato');go('profilo')}
+}
+
+let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2600)}
+
+/* ---------- Events ---------- */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;
+  switch(a){
+    case 'go':closeSheet();go(el.dataset.view);break;
+    case 'open':openDetail(el.dataset.id);break;
+    case 'close':closeSheet();break;
+    case 'prev':cal.m--;if(cal.m<0){cal.m=11;cal.y--}cal.sel=null;render();break;
+    case 'next':cal.m++;if(cal.m>11){cal.m=0;cal.y++}cal.sel=null;render();break;
+    case 'today':{const d=new Date();cal={y:d.getFullYear(),m:d.getMonth(),sel:dayKey(d)};render();break}
+    case 'day':cal.sel=cal.sel===el.dataset.day?null:el.dataset.day;render();break;
+    case 'clearday':cal.sel=null;render();break;
+    case 'ftype':keepForm();form.type=el.dataset.type;render();restoreForm();break;
+    case 'submit':submit();break;
+    case 'rules':openRules();break;
+    case 'login':S.role='residente';save();toast('Accesso effettuato (demo)');render();break;
+    case 'role':S.role=el.dataset.role;save();render();break;
+    case 'trusted':S.trusted=el.checked;save();toast(S.trusted?'Ora pubblichi senza attesa':'I tuoi post passano dall\'approvazione');break;
+    case 'approve':case 'reject':{const p=S.posts.find(x=>x.id===el.dataset.id);if(p&&a==='approve'&&p.type==='evento'&&!p.place){toast('Completa il luogo prima di approvare');break}if(p){p.status=a==='approve'?'approvato':'rifiutato';save();toast(a==='approve'?'Approvato e pubblicato':'Rifiutato');render()}break}
+    case 'reset':S=seed();save();form={type:'evento',v:{}};toast('Dati di esempio ripristinati');render();break;
+    case 'share':share(el.dataset.id);break;
+  }});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sheet.classList.contains('open'))closeSheet()});
+
+load();render();
+})();
+</script>
+</body>
+</html>
