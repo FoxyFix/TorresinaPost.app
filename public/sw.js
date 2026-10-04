@@ -1,12 +1,12 @@
 // Service worker: l'app si apre anche senza rete (con gli ultimi dati visti).
-const CACHE = 'torresina-v2';
+const CACHE = 'torresina-v3';
 const SHELL = [
   '/', '/index.html', '/privacy.html', '/css/app.css',
   '/js/app.js', '/js/config.js', '/js/condividi.js',
   '/vendor/supabase.js', '/vendor/leaflet/leaflet.js', '/vendor/leaflet/leaflet.css',
   '/fonts/atkinson-hyperlegible-latin-400-normal.woff2', '/fonts/atkinson-hyperlegible-latin-700-normal.woff2',
   '/fonts/bricolage-grotesque-latin-600-normal.woff2', '/fonts/bricolage-grotesque-latin-800-normal.woff2',
-  '/manifest.webmanifest', '/icons/icon-192.png',
+  '/manifest.webmanifest', '/icons/icon-192.png', '/img/torresina-hero.svg',
 ];
 
 self.addEventListener('install', (e) => {

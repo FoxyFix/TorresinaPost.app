@@ -27,7 +27,8 @@ netlify/functions/
   elimina-account.mjs    /api/elimina-account  cancella account, post e foto dell'utente
   tieni-attivo.mjs       ogni giorno     evita la pausa del database gratuito
 netlify/lib/             codice condiviso: Supabase, estrazione con Claude, import
-supabase/migrations/     001 schema base, 002 import dai social, 003 attività, offerte, pop-up, galleria
+supabase/migrations/     001 schema base, 002 import dai social, 003 attività, offerte, pop-up, galleria,
+                         004 modifica dei propri contenuti
 ```
 
 ## Regole comuni a tutti i canali
@@ -150,6 +151,23 @@ Apri http://localhost:8888. Le funzioni `/api/*` usano le variabili del file `.e
   `tieni-attivo` (una lettura al giorno) lo evita.
 - Le email: con il servizio di prova di Supabase sono pochissime all'ora. Serve l'SMTP (Gmail o Brevo).
 - Controlla i consumi in Supabase → Organization → Usage.
+
+## Modifica dei propri contenuti (004)
+Esegui una volta `supabase/migrations/004_modifiche_residenti.sql`. Da quel momento:
+- ogni residente può **modificare ed eliminare** i propri eventi, avvisi e foto (didascalia ed evento
+  collegato), da Profilo → I miei post o dal dettaglio del contenuto;
+- se un residente normale modifica un contenuto già pubblicato, questo **torna in approvazione**
+  (così non si può far approvare un testo e poi cambiarlo); i fidati e gli admin restano pubblicati;
+- un contenuto rifiutato, una volta corretto, torna in coda da approvare;
+- le regole sono applicate dal database, non solo dall'app.
+
+## Testata e grafica (redesign 02)
+- Palette tramonto: terracotta `#B84E2E`, prugna `#6E394E`, oliva `#68723F`, crema `#FFF8F1`.
+  Tutti i colori passano dalle variabili in `public/css/app.css` (tema chiaro e scuro).
+- La testata mostra l'illustrazione `public/img/torresina-hero.svg`. Per usare una foto vera:
+  mettila in `public/img/` (consigliato: 1600 px di larghezza, JPEG sotto i 300 KB) e scrivi il percorso
+  in `HERO_FOTO`, in cima alla sezione "Pezzi di interfaccia" di `public/js/app.js`.
+  Se la foto è di terzi, indica autore e licenza nella sezione Crediti di `privacy.html`.
 
 ## App Android
 Vedi `docs/APK.md`.

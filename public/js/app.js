@@ -263,23 +263,23 @@ function msgAuth(e) {
 /* =====================================================================
    Pezzi di interfaccia
    ===================================================================== */
-const SKYLINE = `<svg class="skyline" viewBox="0 0 360 76" aria-hidden="true"><defs><pattern id="cortina" width="12" height="6" patternUnits="userSpaceOnUse"><rect width="12" height="6" class="k-brick"/><path class="k-mortar" d="M0 3H12M0 6H12M6 0V3M0 3V6M12 3V6"/></pattern></defs>${
-  [[0, 26, 66, 50, 3], [88, 8, 62, 68, 4], [172, 30, 78, 46, 3], [280, 18, 58, 58, 4]].map(([x, y, w, h, f]) => {
-    let o = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#cortina)"/>`;
-    const step = (h - 8) / f;
-    for (let i = 0; i < f; i++) {
-      const fy = y + 4 + i * step;
-      for (let wx = x + 5; wx < x + w - 6; wx += 11) o += `<rect class="k-win" x="${wx}" y="${(fy + 2).toFixed(1)}" width="5" height="${(step - 6).toFixed(1)}" rx="1"/>`;
-      o += `<rect class="k-rail" x="${x - 1}" y="${(fy + step - 4).toFixed(1)}" width="${w + 2}" height="3"/>`;
-    }
-    return o + `<rect class="k-trav" x="${x}" y="${y + h - 6}" width="${w}" height="6"/>`;
-  }).join('')
-}${
-  [[68, 20, 18, 56, 5], [152, 14, 18, 62, 6], [340, 24, 20, 52, 5]].map(([x, y, w, h, n]) => {
-    const pts = []; for (let i = 0; i <= n; i++) pts.push(`${x + (i % 2 ? w : 0)},${(y + h - i * h / n).toFixed(1)}`);
-    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="k-white" opacity=".35"/><polyline class="k-stair" points="${pts.join(' ')}"/><rect x="${x}" y="${y}" width="1.6" height="${h}" class="k-white"/><rect x="${x + w - 1.6}" y="${y}" width="1.6" height="${h}" class="k-white"/>`;
-  }).join('')
-}<circle class="k-tree" cx="264" cy="54" r="11"/><rect class="k-trav" x="262" y="62" width="4" height="14"/></svg>`;
+// Testata: quando avrete una vostra foto del quartiere, mettetela in public/img/
+// e scrivete qui il percorso, es. '/img/torresina-hero.jpg'. Senza foto si vede l'illustrazione.
+const HERO_FOTO = null;
+const HERO = `<figure class="hero-photo" aria-label="Torresina, Roma">
+  ${HERO_FOTO ? `<img src="${HERO_FOTO}" alt="Veduta del quartiere Torresina a Roma" loading="eager" decoding="async" onerror="this.remove()">` : ''}
+  <figcaption class="hero-photo__label">Torresina · Roma XIV</figcaption></figure>`;
+
+const svgI = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const ICONE = {
+  cal: svgI('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>'),
+  pin: svgI('<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'),
+  mega: svgI('<path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>'),
+  foto: svgI('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
+  festa: svgI('<path d="M3 5l18 2M5 5.2l2 6 3-5.4M12 6l2 6 3-5.2M18 6.8l1.5 5"/>'),
+  chev: svgI('<path d="M9 6l6 6-6 6"/>'),
+};
+const vuoto = (icona, html, cls = '') => `<div class="note empty"><span class="empty-ic ${cls}">${ICONE[icona]}</span><p>${html}</p></div>`;
 
 const RULES = `<div class="rules"><p>Scrivi solo di cose che riguardano il quartiere.</p>
 <p>Niente nomi, cognomi, targhe o foto di persone riconoscibili, anche negli avvisi.</p>
@@ -316,7 +316,7 @@ function pulisciPicker(...keys) { keys.forEach((k) => { if (files[k]?.url) URL.r
 function evCard(p) {
   const s = new Date(p.start);
   return `<button class="ev" data-action="open" data-id="${p.id}"><span class="datebox"><span class="d">${s.getDate()}</span><span class="m">${fMon.format(s).replace('.', '')}</span></span>
-  <span class="ev-txt"><b>${esc(p.title)}</b><small>${cap(fWeekday.format(s))}, ${fTime.format(s)}</small><small>${esc(p.place || '')}</small></span>
+  <span class="ev-txt"><b>${esc(p.title)}</b><small class="mi">${ICONE.cal}${cap(fWeekday.format(s))}, ${fTime.format(s)}</small>${p.place ? `<small class="mi">${ICONE.pin}${esc(p.place)}</small>` : ''}</span>
   ${p.foto ? `<img class="ev-img" src="${esc(urlFoto(p.foto, true))}" alt="" loading="lazy">` : ''}</button>`;
 }
 function alertRow(p) {
@@ -387,18 +387,18 @@ function vHome() {
   const ga = st.gallery.slice(0, 6);
   const cm = comms();
   const pend = isAdmin() ? pendenti() : 0;
-  return `<header class="hero"><h1 class="wordmark">Torresina</h1><p>Avvisi, eventi e attività del quartiere, tutti in un posto.</p>${SKYLINE}</header>
+  return `<header class="hero"><h1 class="wordmark">Torresina</h1><p>Avvisi, eventi e attività del quartiere, tutti in un posto.</p>${HERO}</header>
   ${offlineNote()}
   ${cm.map((c) => `<button class="comm ${c.livello}" data-action="open-comm" data-id="${c.id}"><b>${esc(c.titolo)}</b><span>${LIVELLI[c.livello]}</span></button>`).join('')}
   ${pend ? `<button class="banner" data-action="go-admin" data-tab="coda"><b>${pend === 1 ? '1 contenuto da approvare' : pend + ' contenuti da approvare'}</b><span>Apri</span></button>` : ''}
   <section class="section"><div class="section-head"><h2>Avvisi</h2></div>
-  ${al.length ? `<div class="stack">${al.map(alertRow).join('')}</div>` : `<p class="note">Nessun avviso al momento.</p>`}</section>
-  <section class="section"><div class="section-head"><h2>Prossimi eventi</h2><button class="link" data-action="go" data-view="eventi">Calendario</button></div>
-  ${up.length ? `<div class="stack">${up.map(evCard).join('')}</div>` : `<p class="note">Nessun evento in programma. <button class="link" data-action="go" data-view="proponi">Proponi il primo</button></p>`}</section>
+  ${al.length ? `<div class="stack">${al.map(alertRow).join('')}</div>` : vuoto('mega', 'Nessun avviso al momento.')}</section>
+  <section class="section"><div class="section-head"><h2>Prossimi eventi</h2><button class="link link-chev" data-action="go" data-view="eventi">Calendario${ICONE.chev}</button></div>
+  ${up.length ? `<div class="stack">${up.map(evCard).join('')}</div>` : vuoto('festa', 'Nessun evento in programma. <button class="link" data-action="go" data-view="proponi">Proponi il primo</button>')}</section>
   ${pr.length ? `<section class="section"><div class="section-head"><h2>Offerte del quartiere</h2><button class="link" data-action="go" data-view="attivita">Attività</button></div>
   <div class="rail">${pr.map(promoCard).join('')}</div></section>` : ''}
   <section class="section"><div class="section-head"><h2>Foto del quartiere</h2>${ga.length ? '<button class="link" data-action="go" data-view="galleria">Vedi tutte</button>' : ''}</div>
-  ${ga.length ? `<div class="gallery">${ga.map(thumb).join('')}</div>` : `<p class="note">Ancora nessuna foto. <button class="link" data-action="add-foto">Aggiungi la prima</button></p>`}</section>`;
+  ${ga.length ? `<div class="gallery">${ga.map(thumb).join('')}</div>` : vuoto('foto', 'Ancora nessuna foto. <button class="link" data-action="add-foto">Aggiungi la prima</button>', 'plum')}</section>`;
 }
 
 function vEventi() {
@@ -569,6 +569,7 @@ function vProfilo() {
   <div class="stack">${st.myBiz.map((b) => `<div class="card"><div class="card-top"><b>${esc(b.nome)}</b><span class="tag ${b.visibile ? 'ok' : ''}">${b.visibile ? 'Visibile' : 'In revisione'}</span></div>
   <div class="btn-row"><button class="btn secondary" data-action="biz-form" data-id="${b.id}">Modifica scheda</button><button class="btn secondary" data-action="promo-list" data-id="${b.id}">Offerte</button></div></div>`).join('')}</div></section>` : ''}
   <section class="section"><div class="section-head"><h2>I miei post</h2></div>
+  ${st.mine.length || st.myPhotos.length ? '<p class="hint" style="margin:-4px 0 10px">Tocca un post o una foto per modificarli o eliminarli.</p>' : ''}
   ${st.mine.length ? `<div class="stack">${st.mine.map(myRow).join('')}</div>` : `<p class="note">Non hai ancora proposto nulla. <button class="link" data-action="go" data-view="proponi">Proponi un evento</button></p>`}</section>
   ${st.myPhotos.length ? `<section class="section"><div class="section-head"><h2>Le mie foto</h2></div>
   <div class="gallery">${st.myPhotos.map((f) => `<button class="thumb" data-action="open-foto" data-id="${f.id}"><img src="${esc(urlFoto(f.path, true))}" alt="" loading="lazy">${f.stato !== 'approvato' ? `<span class="tag ${STATUS[f.stato][1]}">${STATUS[f.stato][0]}</span>` : ''}</button>`).join('')}</div></section>` : ''}
@@ -659,8 +660,9 @@ function openDetail(id) {
   ${p.fonteUrl && pub ? `<p><a class="link" href="${esc(p.fonteUrl)}" target="_blank" rel="noopener">Vedi il post originale su ${FONTI[p.fonte] || 'social'}</a></p>` : ''}
   ${pub ? `<button class="btn secondary block" data-action="share" data-id="${p.id}" style="margin-top:12px">Condividi</button>`
     : `<p class="note">Stato: ${STATUS[p.status][0].toLowerCase()}. Solo tu e gli admin vedete questo post.</p>`}
-  ${mio && p.status === 'in_attesa' ? `<button class="btn ghost block" data-action="withdraw" data-id="${p.id}">Ritira il post</button>` : ''}
-  ${isAdmin() && pub ? `<button class="btn ghost block" data-action="edit" data-id="${p.id}">Modifica</button><button class="btn ghost block" data-action="hide" data-id="${p.id}">Nascondi dalla bacheca</button>` : ''}`);
+  ${mio || isAdmin() ? `<div class="btn-row" style="margin-top:14px"><button class="btn secondary" data-action="edit" data-id="${p.id}">Modifica</button>
+  ${mio ? `<button class="btn ghost" data-action="post-delete" data-id="${p.id}">Elimina</button>` : `<button class="btn ghost" data-action="hide" data-id="${p.id}">Nascondi</button>`}</div>` : ''}
+  ${mio && p.status === 'rifiutato' ? `<p class="hint">Correggilo con "Modifica": tornerà in approvazione.</p>` : ''}`);
   mountMap(p.lat, p.lng);
 }
 
@@ -703,7 +705,34 @@ function openFoto(id) {
   <p class="meta">${f.autore ? 'di ' + esc(f.autore) + ' · ' : ''}${since(f.creato_il)}</p>
   ${ev ? `<button class="btn secondary block" data-action="open" data-id="${ev.id}">Vai all'evento: ${esc(ev.title)}</button>` : ''}
   ${isAdmin() ? `<button class="btn ghost block" data-action="foto-reject" data-id="${f.id}">Nascondi dalla galleria</button>` : ''}
-  ${mia ? `<button class="btn ghost block" data-action="foto-delete" data-id="${f.id}">Elimina la mia foto</button>` : ''}`);
+  ${mia ? `<div class="btn-row" style="margin-top:14px"><button class="btn secondary" data-action="foto-edit" data-id="${f.id}">Modifica</button><button class="btn ghost" data-action="foto-delete" data-id="${f.id}">Elimina</button></div>` : ''}`);
+}
+
+function openFotoEdit(id) {
+  const f = st.myPhotos.find((x) => x.id === id) || st.gallery.find((x) => x.id === id);
+  if (!f) return;
+  editing = f;
+  const eventi = st.events.filter((p) => new Date(p.start) > new Date(Date.now() - 90 * 864e5)).slice(-40).reverse();
+  openSheet(`${sheetTop('Modifica foto', 'ok')}
+  <img class="card-img big" src="${esc(urlFoto(f.path, true))}" alt="">
+  ${!isTrusted() && f.stato === 'approvato' ? '<p class="note" style="margin-bottom:14px">La foto è pubblicata: se cambi didascalia o evento torna in approvazione.</p>' : ''}
+  ${inp('fe-caption', 'Didascalia', f.didascalia, 'maxlength="200"')}
+  <label class="field"><span>È di un evento?</span><select id="fe-post"><option value="">Nessun evento</option>
+  ${eventi.map((p) => `<option value="${p.id}" ${p.id === f.post_id ? 'selected' : ''}>${esc(p.title)} – ${fDate.format(new Date(p.start))}</option>`).join('')}</select></label>
+  <p class="hint">Per cambiare l'immagine, elimina la foto e caricane una nuova.</p>
+  <p class="err" id="fe-err" role="alert"></p>
+  <button class="btn primary block" data-action="foto-save">Salva le modifiche</button>`);
+}
+
+async function saveFoto(btn) {
+  const f = editing;
+  if (!f) return;
+  busy(btn, true);
+  const { data: dopo, error } = await sb.from('foto').update({ didascalia: val('fe-caption') || null, post_id: val('fe-post') || null }).eq('id', f.id).select('stato').maybeSingle();
+  busy(btn, false);
+  if (error) { $('fe-err').textContent = msgErrore(error); return; }
+  closeSheet(); await refresh();
+  toast(dopo?.stato === 'in_attesa' && f.stato === 'approvato' ? 'Modifiche inviate: la foto riappare dopo l\'approvazione' : 'Modifiche salvate');
 }
 
 function openComm(id) {
@@ -723,15 +752,21 @@ function openRules() {
 
 /* ---------- Moduli degli admin ---------- */
 function openEdit(id) {
-  const p = st.queue.find((x) => x.id === id) || findPost(id);
+  const p = st.queue.find((x) => x.id === id) || st.mine.find((x) => x.id === id) || findPost(id);
   if (!p) return;
+  const mio = st.mine.some((x) => x.id === id);
+  if (!isAdmin() && !mio) return;
   editing = p;
+  const avvisoAutore = !isAdmin() && !isTrusted() && p.status === 'approvato'
+    ? '<p class="note" style="margin-bottom:14px">Il post è pubblicato: dopo la modifica torna in approvazione e riappare quando un admin lo conferma.</p>'
+    : !isAdmin() && p.status === 'rifiutato' ? '<p class="note" style="margin-bottom:14px">Dopo la modifica il post torna in approvazione.</p>' : '';
   pulisciPicker('edit');
   const s = p.start && p.type === 'evento' ? new Date(p.start) : null;
   const e = p.end ? new Date(p.end) : null;
-  openSheet(`${sheetTop(p.status === 'approvato' ? 'Modifica' : 'Modifica prima di approvare')}
-  <h2 class="sheet-title" id="sheet-title">Controlla i dati</h2>
-  ${p.orig ? `<details class="orig"><summary>Testo originale${p.fonte !== 'app' ? ' da ' + FONTI[p.fonte] : ''}</summary><p>${esc(p.orig)}</p></details>` : ''}
+  openSheet(`${sheetTop(isAdmin() && p.status === 'in_attesa' ? 'Modifica prima di approvare' : 'Modifica')}
+  <h2 class="sheet-title" id="sheet-title">${mio && !isAdmin() ? 'Modifica il tuo post' : 'Controlla i dati'}</h2>
+  ${avvisoAutore}
+  ${p.orig && isAdmin() ? `<details class="orig"><summary>Testo originale${p.fonte !== 'app' ? ' da ' + FONTI[p.fonte] : ''}</summary><p>${esc(p.orig)}</p></details>` : ''}
   ${seg('e-tipo', [['evento', 'Evento'], ['avviso', 'Avviso']], p.type, 'Tipo')}
   ${inp('e-title', 'Titolo', p.title, 'maxlength="80"')}
   <div data-show="e-tipo:evento" ${p.type === 'evento' ? '' : 'hidden'}>
@@ -744,7 +779,7 @@ function openEdit(id) {
   ${area('e-desc', 'Descrizione', p.desc, 'maxlength="2000"')}
   ${picker('edit', 'Foto', p.foto)}
   <p class="err" id="e-err" role="alert"></p>
-  <div class="btn-row">${p.status === 'approvato' ? `<button class="btn primary" data-action="edit-save" style="grid-column:1/-1">Salva</button>`
+  <div class="btn-row">${!isAdmin() || p.status === 'approvato' ? `<button class="btn primary" data-action="edit-save" style="grid-column:1/-1">Salva le modifiche</button>`
     : `<button class="btn secondary" data-action="edit-save">Salva</button><button class="btn primary" data-action="edit-approve">Salva e approva</button>`}</div>`, () => pulisciPicker('edit'));
 }
 
@@ -1023,8 +1058,9 @@ async function saveEdit(btn, approva) {
   let inizio = null, fine = null;
   if (tipo === 'evento') {
     const d = val('e-date'), s = val('e-start'), e = val('e-end');
-    if ((approva || p.status === 'approvato') && (!d || !s)) return err('Per un evento pubblicato servono giorno e ora.');
-    if ((approva || p.status === 'approvato') && !place) return err('Per un evento pubblicato serve il luogo.');
+    const serveTutto = approva || p.status === 'approvato' || !isAdmin();
+    if (serveTutto && (!d || !s)) return err("Indica giorno e ora dell'evento.");
+    if (serveTutto && !place) return err('Indica dove si svolge.');
     if (d && s) {
       const sd = new Date(d + 'T' + s); inizio = sd.toISOString();
       if (e) { const ed = new Date(d + 'T' + e); if (ed > sd) fine = ed.toISOString(); }
@@ -1041,11 +1077,13 @@ async function saveEdit(btn, approva) {
     if (pos) { upd.lat = pos.lat; upd.lng = pos.lng; }
     if (foto !== undefined) upd.foto_path = foto ? foto.path : null;
     if (approva) { upd.stato = 'approvato'; upd.motivo_rifiuto = null; }
-    const { error } = await sb.from('posts').update(upd).eq('id', p.id);
+    const { data: dopo, error } = await sb.from('posts').update(upd).eq('id', p.id).select('stato').maybeSingle();
     if (error) throw error;
     closeSheet();
     await refresh();
-    toast(approva ? 'Approvato e pubblicato' : 'Modifiche salvate');
+    if (approva) toast('Approvato e pubblicato');
+    else if (!isAdmin() && dopo?.stato === 'in_attesa' && p.status !== 'in_attesa') toast('Modifiche inviate: il post riappare dopo l\'approvazione');
+    else toast('Modifiche salvate');
   } catch (e) { console.error(e); err(msgErrore(e)); } finally { busy(btn, false); }
 }
 
@@ -1288,11 +1326,11 @@ document.addEventListener('click', async (e) => {
       if (!confirm('Nascondere questo post dalla bacheca?')) break;
       if (await setStato('posts', id, 'rifiutato', 'Rimosso da un admin')) { closeSheet(); toast('Post nascosto'); }
       break;
-    case 'withdraw': {
-      if (!confirm('Vuoi ritirare questo post?')) break;
-      const p = findPost(id);
+    case 'post-delete': {
+      if (!confirm('Eliminare definitivamente questo post?')) break;
+      const p = st.mine.find((x) => x.id === id) || findPost(id);
       const { error } = await sb.from('posts').delete().eq('id', id);
-      if (error) toast(msgErrore(error)); else { if (p?.foto) rimuoviFile(p.foto); closeSheet(); await refresh(); toast('Post ritirato'); }
+      if (error) toast(msgErrore(error)); else { if (p?.foto) rimuoviFile(p.foto); closeSheet(); await refresh(); toast('Post eliminato'); }
       break;
     }
     case 'foto-approve': busy(el, true); if (await setStato('foto', id, 'approvato')) toast('Foto pubblicata'); else busy(el, false); break;
@@ -1300,6 +1338,8 @@ document.addEventListener('click', async (e) => {
       if (!confirm('Togliere questa foto dalla galleria?')) break;
       if (await setStato('foto', id, 'rifiutato')) { closeSheet(); toast('Foto rifiutata'); }
       break;
+    case 'foto-edit': openFotoEdit(id); break;
+    case 'foto-save': saveFoto(el); break;
     case 'foto-delete': {
       if (!confirm('Eliminare questa foto?')) break;
       const f = st.myPhotos.find((x) => x.id === id) || st.gallery.find((x) => x.id === id);

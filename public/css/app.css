@@ -315,3 +315,118 @@ a.mine{text-decoration:none}
 /* l'etichetta rossa non deve ereditare lo stile delle righe di avviso */
 .tag.alert{display:inline-block;width:auto;padding:3px 10px;border:0;border-radius:999px;gap:0;cursor:inherit;align-items:initial}
 .badges .tag,.card-top .tag{flex:none}
+
+/* =====================================================================
+   Redesign 02 – tramonto: terracotta, prugna, oliva
+   (palette e override dal pacchetto di design, adattati al tema scuro
+   e al contrasto minimo per il testo)
+   ===================================================================== */
+:root{
+  --bg:#FFF8F1;--surface:#FFFDFC;--ink:#402B2D;--muted:#745E5C;--line:#E8D8CF;
+  --green:#B84E2E;--on-green:#FFFFFF;--green-soft:#F8E5DD;
+  --sun:#C45B36;--sun-soft:#F7E7DE;
+  --alert:#B4462E;--on-alert:#FFFFFF;--alert-soft:#FBE6DF;
+  --ok:#68723F;--ok-soft:#E8E9D8;
+  --plum:#6E394E;--plum-soft:#F2E3E8;--peach:#EFA884;
+  --mortar:#F1DDD2;--brick:#C85E3B;--trim:#FFF8F1;
+  /* pulsanti e box data: sfumature con testo bianco sempre ≥ 5:1 */
+  --grad-a:#B84E2E;--grad-b:#9C3D25;--on-grad:#FFFFFF;
+  --olive-a:#68723F;--olive-b:#565F33;
+  --shadow:0 7px 20px rgba(76,42,38,.07);
+  --blob-a:rgba(184,78,46,.11);--blob-b:rgba(104,114,63,.10);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#211718;--surface:#2B1F20;--ink:#FAEEE8;--muted:#C5AAA4;--line:#493435;
+    --green:#F07D59;--on-green:#211718;--green-soft:#432820;
+    --sun:#E98A64;--sun-soft:#3C2B27;
+    --alert:#FF8364;--on-alert:#211718;--alert-soft:#48251F;
+    --ok:#A9B476;--ok-soft:#303521;
+    --plum:#D89AAE;--plum-soft:#3B2930;--peach:#E8A17E;
+    --mortar:#382526;--brick:#D66C49;--trim:#F9EAE3;
+    --grad-a:#F07D59;--grad-b:#E2694A;--on-grad:#211718;
+    --olive-a:#A9B476;--olive-b:#939E62;
+    --shadow:0 7px 20px rgba(0,0,0,.25);
+    --blob-a:rgba(240,125,89,.08);--blob-b:rgba(169,180,118,.07);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#211718;--surface:#2B1F20;--ink:#FAEEE8;--muted:#C5AAA4;--line:#493435;
+  --green:#F07D59;--on-green:#211718;--green-soft:#432820;
+  --sun:#E98A64;--sun-soft:#3C2B27;
+  --alert:#FF8364;--on-alert:#211718;--alert-soft:#48251F;
+  --ok:#A9B476;--ok-soft:#303521;
+  --plum:#D89AAE;--plum-soft:#3B2930;--peach:#E8A17E;
+  --mortar:#382526;--brick:#D66C49;--trim:#F9EAE3;
+  --grad-a:#F07D59;--grad-b:#E2694A;--on-grad:#211718;
+  --olive-a:#A9B476;--olive-b:#939E62;
+  --shadow:0 7px 20px rgba(0,0,0,.25);
+  --blob-a:rgba(240,125,89,.08);--blob-b:rgba(169,180,118,.07);
+  color-scheme:dark;
+}
+
+body{
+  background:
+    radial-gradient(circle at -8% 95%, var(--blob-a) 0 18%, transparent 18.5%),
+    radial-gradient(circle at 108% 90%, var(--blob-b) 0 16%, transparent 16.5%),
+    var(--bg);
+}
+
+/* Titoli */
+.section-head h2,.pagehead h1,.list-head h2{color:var(--ink)}
+.section-head h2{font-weight:800}
+.pagehead h1{color:var(--green)}
+
+/* Card più morbide */
+.note,.ev,.card,.mine,.cal,.box,.biz,.promo,.alert.info{border-color:var(--line);box-shadow:var(--shadow)}
+
+.link{color:var(--green);text-decoration-thickness:1.5px}
+.link-chev{display:inline-flex;align-items:center;gap:2px}
+.link-chev svg{width:16px;height:16px}
+
+/* Avvisi */
+.alert.info{background:linear-gradient(135deg,var(--surface) 0%,var(--alert-soft) 100%)}
+
+/* Eventi: box data terracotta / oliva alternati */
+.ev{position:relative;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease}
+.ev:active{transform:scale(.992)}
+.ev .datebox{background:linear-gradient(145deg,var(--grad-a),var(--grad-b));color:var(--on-grad)}
+.ev:nth-child(even) .datebox{background:linear-gradient(145deg,var(--olive-a),var(--olive-b))}
+.ev .datebox .m{color:var(--on-grad);opacity:.9}
+.ev small.mi{display:flex;align-items:center;gap:7px}
+.ev small.mi svg{flex:none;width:15px;height:15px;color:var(--green)}
+
+/* Pulsanti */
+.btn.primary{background:linear-gradient(135deg,var(--grad-a),var(--grad-b));color:var(--on-grad);box-shadow:0 7px 18px rgba(184,78,46,.20)}
+.btn.secondary{background:var(--plum-soft);color:var(--ink)}
+@media (hover:hover){.btn.secondary:hover{background:color-mix(in srgb,var(--plum-soft) 82%,var(--plum))}}
+.tab .plus{background:linear-gradient(135deg,var(--grad-a),var(--grad-b));color:var(--on-grad)}
+.seg button[aria-pressed="true"]{box-shadow:0 4px 12px rgba(110,57,78,.14)}
+.chip[aria-pressed="true"]{background:linear-gradient(135deg,var(--grad-a),var(--grad-b));border-color:transparent;color:var(--on-grad)}
+
+/* Stati vuoti con icona */
+.note.empty{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,var(--surface) 0%,var(--green-soft) 100%)}
+.note.empty p{margin:0}
+.empty-ic{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--sun-soft);color:var(--green)}
+.empty-ic svg{width:22px;height:22px}
+.empty-ic.plum{background:var(--plum-soft);color:var(--plum)}
+
+/* Testata fotografica */
+.hero{padding:26px 0 0}
+.hero-photo{
+  width:100%;aspect-ratio:16/5.6;min-height:150px;max-height:235px;border-radius:22px;overflow:hidden;
+  margin:22px 0 6px;position:relative;
+  background:#EFDCD2 url(/img/torresina-hero.svg) center/cover no-repeat;
+  box-shadow:0 12px 30px rgba(76,42,38,.13);
+}
+.hero-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 46%}
+.hero-photo::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(60,28,28,0) 48%,rgba(60,28,28,.17) 100%),linear-gradient(90deg,rgba(110,57,78,.07),rgba(200,94,59,.04))}
+.hero-photo__label{position:absolute;left:14px;bottom:12px;z-index:1;padding:7px 11px;border-radius:999px;color:#fff;
+  background:rgba(60,35,37,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:13px;font-weight:700}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hero-photo{filter:brightness(.88)}}
+
+@media (min-width:700px){.wrap{max-width:620px}.tabbar-inner{max-width:620px}.hero-photo{aspect-ratio:16/5}}
+@media (prefers-reduced-motion:reduce){.ev{transition:none}}
