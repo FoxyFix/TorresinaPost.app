@@ -267,10 +267,43 @@ function msgAuth(e) {
    ===================================================================== */
 // Testata: quando avrete una vostra foto del quartiere, mettetela in public/img/
 // e scrivete qui il percorso, es. '/img/torresina-hero.jpg'. Senza foto si vede l'illustrazione.
-const HERO_FOTO = null;
-const HERO = `<figure class="hero-photo" aria-label="Torresina, Roma">
-  ${HERO_FOTO ? `<img src="${HERO_FOTO}" alt="Veduta del quartiere Torresina a Roma" loading="eager" decoding="async" onerror="this.remove()">` : ''}
+const HERO_FOTO = '/img/torresina-hero.jpg';
+const HERO = `<figure class="hero-photo full" aria-label="Torresina, Roma">
+  ${HERO_FOTO ? `<img src="${HERO_FOTO}" alt="Il quartiere Torresina al tramonto" loading="eager" decoding="async" fetchpriority="high" onerror="this.remove()">` : ''}
   <figcaption class="hero-photo__label">Torresina · Roma XIV</figcaption></figure>`;
+
+// Illustrazioni a destra nelle card degli eventi, scelte dal titolo
+const BLOB = '<path class="d-blob" d="M14 72 C8 52 26 38 50 38 C74 38 94 48 96 72 Z"/>';
+const DECO = {
+  festa: `${BLOB}<path class="d-line" d="M6 12 Q48 30 92 10"/><path class="d-plum" d="M10 14 L26 19 L16 36Z"/><path class="d-terra" d="M30 21 L46 25 L39 42Z"/><path class="d-plum" d="M50 25 L66 24 L59 41Z"/><path class="d-terra" d="M70 21 L86 15 L82 33Z" opacity=".8"/><path class="d-sp" d="M80 4 L84 0M90 10 L95 8M4 44 L8 40M2 34 L7 34"/>`,
+  moto: `${BLOB}<circle class="d-line" cx="26" cy="52" r="12" stroke-width="5"/><circle class="d-line" cx="74" cy="52" r="12" stroke-width="5"/><path class="d-line" d="M26 52 L42 34 H60 L74 52" stroke-width="4"/><path class="d-plum" d="M38 32 C44 22 60 22 66 32 L60 38 H44Z"/><path class="d-line" d="M64 28 L70 20 H78" stroke-width="4"/><path class="d-sp" d="M2 34 H14M6 42 H16"/>`,
+  griglia: `${BLOB}<path class="d-terra" d="M26 28 H78 C78 44 68 52 52 52 C36 52 26 44 26 28Z"/><path class="d-tline" d="M22 28 H82M40 52 L32 70M64 52 L72 70M52 52 V66"/><path class="d-line" d="M44 20 c-4 -4 4 -6 0 -12M52 20 c-4 -4 4 -6 0 -12M60 20 c-4 -4 4 -6 0 -12" stroke-width="2.2"/><path class="d-sp" d="M14 18 L20 22M10 30 H18M86 18 L92 14"/>`,
+  musica: `${BLOB}<path class="d-line" d="M36 46 V14 L72 8 V40" stroke-width="4"/><path class="d-line" d="M36 20 L72 14" stroke-width="4"/><ellipse class="d-plum" cx="29" cy="47" rx="9" ry="7"/><ellipse class="d-terra" cx="65" cy="41" rx="9" ry="7"/><path class="d-sp" d="M82 22 L88 18M84 32 H92M12 26 L18 30"/>`,
+  sport: `${BLOB}<circle class="d-line" cx="56" cy="38" r="20" stroke-width="3.5"/><path class="d-terra" d="M56 30 L64 36 L61 45 H51 L48 36Z"/><path class="d-line" d="M56 18 V30M37 33 L48 36M64 36 L75 33M51 45 L45 54M61 45 L67 54" stroke-width="2"/><path class="d-sp" d="M6 30 H24M10 40 H26M8 50 H22"/>`,
+  bimbi: `${BLOB}<path class="d-terra" d="M58 4 L78 26 L58 48 L38 26Z"/><path class="d-line" d="M58 4 V48M38 26 H78" stroke-width="2"/><path class="d-line" d="M58 48 C52 56 64 60 56 68" stroke-width="2.4"/><path class="d-plum" d="M50 58 l6 3 -6 3z"/><path class="d-sp" d="M86 10 L92 6M90 22 H96"/>`,
+  verde: `${BLOB}<path class="d-line" d="M50 70 C50 50 52 32 60 14" stroke-width="3"/><path class="d-olive" d="M52 46 C36 46 26 36 24 24 C40 24 52 32 52 46Z"/><path class="d-olive" d="M56 32 C58 18 68 10 82 8 C82 22 72 32 56 32Z" opacity=".85"/><path class="d-plum" d="M54 58 C66 58 76 52 80 42 C68 42 58 48 54 58Z" opacity=".8"/>`,
+  incontro: `${BLOB}<path class="d-plum" d="M18 12 H58 a6 6 0 0 1 6 6 V36 a6 6 0 0 1 -6 6 H32 L22 50 V42 H18 a6 6 0 0 1 -6 -6 V18 a6 6 0 0 1 6 -6Z"/><path class="d-terra" d="M44 30 H82 a6 6 0 0 1 6 6 V52 a6 6 0 0 1 -6 6 H78 V66 L68 58 H44 a6 6 0 0 1 -6 -6 V36 a6 6 0 0 1 6 -6Z" opacity=".9"/>`,
+};
+const REGOLE_DECO = [
+  ['moto', /\bmoto|motorad|motocic|vespa|\bbici|ciclo|auto d.epoca/i],
+  ['griglia', /grigli|barbecue|bbq|pork|porchett|cena|pranzo|aperitiv|merenda|castagn|sagra|degustaz|pizza|cibo|food/i],
+  ['musica', /music|concert|\bband\b|\bdj\b|coro\b|karaoke|ballo|danza/i],
+  ['sport', /calcio|torneo|partit|corsa|camminat|maraton|yoga|ginnast|sport|basket|volley|tennis|burraco/i],
+  ['bimbi', /bambin|bimbi|ragazz|laborator|ludotec|scuol|halloween|carneval|befana/i],
+  ['verde', /pulizi|verde|parco|alber|piant|giardin|ambient|rifiut|raccolta|riciclo/i],
+  ['incontro', /riunion|assemble|incontro|comitato|consiglio|dibattit|presentazion|libr|lettur|corso/i],
+  ['festa', /festa|party|compleann|inaugur|mercatin|baratto|natal|capodann|piazza/i],
+];
+function decoEvento(p) {
+  for (const testo of [p.title || '', p.desc || '']) for (const [k, re] of REGOLE_DECO) if (re.test(testo)) return k;
+  return 'festa';
+}
+const decoSvg = (k) => `<span class="ev-deco" aria-hidden="true"><svg viewBox="0 0 96 72">${DECO[k]}</svg></span>`;
+const DECO_VUOTO = {
+  mega: `<path class="d-peach" d="M40 52 C30 40 30 22 40 10 C46 24 46 40 40 52Z" opacity=".55"/><path class="d-peach" d="M44 54 C50 38 62 30 74 30 C70 44 58 52 44 54Z" opacity=".45"/><path class="d-peach" d="M36 54 C28 44 16 40 6 42 C12 52 24 56 36 54Z" opacity=".4"/>`,
+  foto: `<path class="d-sp" d="M6 14 L14 20M2 30 H12M6 46 L14 40"/><rect class="d-peach" x="24" y="8" width="44" height="40" rx="6" opacity=".55"/><path class="d-terra" d="M28 44 L40 28 L48 38 L54 32 L64 44Z" opacity=".55"/><circle class="d-terra" cx="56" cy="18" r="4" opacity=".55"/>`,
+  festa: `<path class="d-line" d="M4 10 Q36 24 68 8" stroke-width="2"/><path class="d-plum" d="M8 12 L20 16 L13 28Z" opacity=".7"/><path class="d-terra" d="M26 18 L38 20 L32 32Z" opacity=".7"/><path class="d-plum" d="M44 20 L56 17 L51 30Z" opacity=".7"/>`,
+};
 
 const svgI = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const ICONE = {
@@ -281,7 +314,8 @@ const ICONE = {
   festa: svgI('<path d="M3 5l18 2M5 5.2l2 6 3-5.4M12 6l2 6 3-5.2M18 6.8l1.5 5"/>'),
   chev: svgI('<path d="M9 6l6 6-6 6"/>'),
 };
-const vuoto = (icona, html, cls = '') => `<div class="note empty"><span class="empty-ic ${cls}">${ICONE[icona]}</span><p>${html}</p></div>`;
+const vuoto = (icona, html, cls = '') => `<div class="note empty"><span class="empty-ic ${cls}">${ICONE[icona]}</span><p>${html}</p>
+  ${DECO_VUOTO[icona] ? `<span class="empty-deco" aria-hidden="true"><svg viewBox="0 0 72 56">${DECO_VUOTO[icona]}</svg></span>` : ''}</div>`;
 
 const RULES = `<div class="rules"><p>Scrivi solo di cose che riguardano il quartiere.</p>
 <p>Niente nomi, cognomi, targhe o foto di persone riconoscibili, anche negli avvisi.</p>
@@ -319,7 +353,7 @@ function evCard(p) {
   const s = new Date(p.start);
   return `<button class="ev" data-action="open" data-id="${p.id}"><span class="datebox"><span class="d">${s.getDate()}</span><span class="m">${fMon.format(s).replace('.', '')}</span></span>
   <span class="ev-txt"><b>${esc(p.title)}</b><small class="mi">${ICONE.cal}${cap(fWeekday.format(s))}, ${fTime.format(s)}</small>${p.place ? `<small class="mi">${ICONE.pin}${esc(p.place)}</small>` : ''}</span>
-  ${p.foto ? `<img class="ev-img" src="${esc(urlFoto(p.foto, true))}" alt="" loading="lazy">` : ''}</button>`;
+  ${p.foto ? `<img class="ev-img" src="${esc(urlFoto(p.foto, true))}" alt="" loading="lazy">` : decoSvg(decoEvento(p))}</button>`;
 }
 function alertRow(p) {
   return `<button class="alert ${p.urgent ? '' : 'info'}" data-action="open" data-id="${p.id}"><span class="dot"></span>
@@ -389,7 +423,7 @@ function vHome() {
   const ga = st.gallery.slice(0, 6);
   const cm = comms();
   const pend = isAdmin() ? pendenti() : 0;
-  return `<header class="hero"><h1 class="wordmark">Torresina</h1><p>Avvisi, eventi e attività del quartiere, tutti in un posto.</p>${HERO}</header>
+  return `<header class="hero"><h1 class="sr-only">Torresina, la bacheca del quartiere</h1>${HERO}</header>
   ${offlineNote()}
   ${cm.map((c) => `<button class="comm ${c.livello}" data-action="open-comm" data-id="${c.id}"><b>${esc(c.titolo)}</b><span>${LIVELLI[c.livello]}</span></button>`).join('')}
   ${pend ? `<button class="banner" data-action="go-admin" data-tab="coda"><b>${pend === 1 ? '1 contenuto da approvare' : pend + ' contenuti da approvare'}</b><span>Apri</span></button>` : ''}

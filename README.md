@@ -164,7 +164,11 @@ Esegui una volta `supabase/migrations/004_modifiche_residenti.sql`. Da quel mome
 ## Testata e grafica (redesign 02)
 - Palette tramonto: terracotta `#B84E2E`, prugna `#6E394E`, oliva `#68723F`, crema `#FFF8F1`.
   Tutti i colori passano dalle variabili in `public/css/app.css` (tema chiaro e scuro).
-- La testata mostra l'illustrazione `public/img/torresina-hero.svg`. Per usare una foto vera:
+- La testata usa `public/img/torresina-hero.jpg`, ricavata dal mockup del redesign (1380×236 px).
+  Se l'immagine non si carica compare l'illustrazione `public/img/torresina-hero.svg`.
+- Sfondo con colline, foglie e palazzi (in `index.html`, classe `.decor`), illustrazioni nelle card
+  degli eventi scelte dal titolo (festa, moto, grigliata, musica, sport, bambini, verde, incontro).
+- Per usare una foto vera al posto di quella del mockup:
   mettila in `public/img/` (consigliato: 1600 px di larghezza, JPEG sotto i 300 KB) e scrivi il percorso
   in `HERO_FOTO`, in cima alla sezione "Pezzi di interfaccia" di `public/js/app.js`.
   Se la foto è di terzi, indica autore e licenza nella sezione Crediti di `privacy.html`.
