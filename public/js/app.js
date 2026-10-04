@@ -1,5 +1,7 @@
 // Torresina, la bacheca del quartiere
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+// Se config.js manca, l'app mostra un messaggio invece di restare in caricamento
+let SUPABASE_URL = '', SUPABASE_ANON_KEY = '';
+try { ({ SUPABASE_URL, SUPABASE_ANON_KEY } = await import('./config.js')); } catch (e) { console.error('config.js non trovato', e); }
 import { leggiCondivisione } from './condividi.js';
 
 const configurato = SUPABASE_URL && !SUPABASE_URL.includes('xxxx') && SUPABASE_ANON_KEY && window.supabase;
