@@ -1,6 +1,6 @@
 # Torresina, la bacheca del quartiere
 
-PWA su Netlify + Supabase. I residenti propongono eventi e avvisi, gli admin approvano.
+PWA su Netlify + Supabase. I residenti propongono eventi, avvisi e foto, gli admin approvano.
 I post taggati sui social arrivano da soli nella coda "Da approvare", già compilati da Claude.
 
 ## Struttura
@@ -15,14 +15,19 @@ public/                  la PWA (HTML, CSS e JavaScript senza build)
   sw.js                  funziona anche offline con gli ultimi dati visti
   manifest.webmanifest   installazione e "share_target" per Condividi da Android
   icons/                 icone dell'app
+  privacy.html           informativa privacy, regolamento, termini
+  vendor/, fonts/        librerie e font ospitati sul sito
 docs/prototipo.html      il prototipo con dati finti, utile per mostrare l'idea
+docs/APK.md              come trasformare la PWA in app Android
 netlify/functions/
   instagram-webhook.mjs  /api/instagram  menzioni di @account su Instagram
   facebook-pagina.mjs    ogni 30 min     post della Pagina con #tag e post che taggano la Pagina
   telegram-webhook.mjs   /api/telegram   messaggi con #tag o @bot nei gruppi autorizzati
   analizza.mjs           /api/analizza   testo condiviso → campi del modulo (solo utenti registrati)
+  elimina-account.mjs    /api/elimina-account  cancella account, post e foto dell'utente
+  tieni-attivo.mjs       ogni giorno     evita la pausa del database gratuito
 netlify/lib/             codice condiviso: Supabase, estrazione con Claude, import
-supabase/migrations/     001 schema base, 002 import dai social
+supabase/migrations/     001 schema base, 002 import dai social, 003 attività, offerte, pop-up, galleria
 ```
 
 ## Regole comuni a tutti i canali
@@ -94,6 +99,15 @@ Se Facebook passa solo il link, l'utente aggiunge due righe. Su iPhone si incoll
      -d 'allowed_updates=["message","channel_post"]'
    ```
 
+## Aggiornamento alla versione 2
+1. Supabase → SQL Editor: esegui `supabase/migrations/003_funzioni_v2.sql` (una sola volta).
+2. Netlify → Environment variables: aggiungi almeno `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`
+   (Supabase → Project Settings → API Keys → chiave *secret*). Servono a "Elimina account" e alla funzione
+   che tiene sveglio il database.
+3. Supabase → Authentication → Sign In / Providers → Email: lascia attivo **Confirm email** e imposta
+   la lunghezza minima della password a 8.
+4. Completa i campi evidenziati in `public/privacy.html` (titolare, email, regione dei server, data).
+
 ## Cosa fa l'app
 
 - **Bacheca**: avvisi (gli urgenti in evidenza) e prossimi eventi. Leggere non richiede account.
@@ -104,8 +118,22 @@ Se Facebook passa solo il link, l'utente aggiunge due righe. Su iPhone si incoll
 - **Profilo**: nome sulla bacheca, i miei post con stato e motivo del rifiuto.
   Per gli admin: coda da approvare (anche i post dai social), modifica prima di approvare,
   rifiuto con motivo, gestione degli utenti fidati, "Nascondi dalla bacheca".
-- **Attività**: schede dalla tabella `attivita` (le inserisci dal pannello di Supabase,
-  con `visibile = true`).
+- **Accesso**: email e password (con recupero password), oppure link via email. Registrazione con
+  accettazione dell'informativa. In Profilo: imposta/cambia password, elimina account.
+- **Foto**: negli eventi e negli avvisi, e una **galleria** del quartiere (anche collegata agli eventi).
+  Le foto vengono ridotte nel telefono prima del caricamento (1600 px + miniatura 480 px) per stare
+  dentro lo spazio gratuito. Le foto dei residenti normali passano dall'approvazione.
+- **Attività e servizi**: schede con foto, orari, contatti (telefono, WhatsApp, sito, Instagram, email),
+  mappa, filtro Negozi/Servizi, "in evidenza" fino a una data.
+- **Offerte**: ogni attività può avere offerte con date di validità, mostrate in Bacheca e in Attività.
+  Gli admin possono assegnare un **titolare** a una scheda: il titolare aggiorna scheda e offerte
+  dal suo Profilo, ma non può renderla visibile o metterla in evidenza.
+- **Pop-up all'avvio**: comunicazioni per interruzioni e avvisi importanti (info, importante, urgente),
+  con data di inizio e fine. Le urgenti ricompaiono ogni 12 ore finché sono attive.
+- **Gestione** (Profilo → Gestione, solo admin): coda da approvare (post e foto), pop-up, attività
+  e offerte, utenti fidati.
+- **Privacy**: `privacy.html` con informativa, regolamento, termini ed eliminazione account.
+  Font e librerie sono ospitati sul sito: nessuna richiesta a Google Fonts o CDN esterni.
 
 ## Sviluppo in locale
 ```
@@ -113,6 +141,18 @@ npm install
 npx netlify dev
 ```
 Apri http://localhost:8888. Le funzioni `/api/*` usano le variabili del file `.env`.
+
+## Limiti del piano gratuito di Supabase
+- 50.000 utenti attivi al mese, database da 500 MB, 1 GB per le foto, 5 GB di traffico al mese.
+  Per un quartiere sono ampi; il punto da tenere d'occhio sono le foto (1 GB ≈ alcune migliaia di
+  foto compresse) e il traffico della galleria, per questo l'app usa le miniature.
+- I progetti gratuiti vengono messi in pausa dopo 7 giorni senza attività: la funzione
+  `tieni-attivo` (una lettura al giorno) lo evita.
+- Le email: con il servizio di prova di Supabase sono pochissime all'ora. Serve l'SMTP (Gmail o Brevo).
+- Controlla i consumi in Supabase → Organization → Usage.
+
+## App Android
+Vedi `docs/APK.md`.
 
 ## Costi
 L'estrazione usa Claude Haiku: una chiamata breve per ogni post taggato.

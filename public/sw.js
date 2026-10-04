@@ -1,7 +1,11 @@
 // Service worker: l'app si apre anche senza rete (con gli ultimi dati visti).
-const CACHE = 'torresina-v1';
+const CACHE = 'torresina-v2';
 const SHELL = [
-  '/', '/index.html', '/css/app.css', '/js/app.js', '/js/config.js', '/js/condividi.js',
+  '/', '/index.html', '/privacy.html', '/css/app.css',
+  '/js/app.js', '/js/config.js', '/js/condividi.js',
+  '/vendor/supabase.js', '/vendor/leaflet/leaflet.js', '/vendor/leaflet/leaflet.css',
+  '/fonts/atkinson-hyperlegible-latin-400-normal.woff2', '/fonts/atkinson-hyperlegible-latin-700-normal.woff2',
+  '/fonts/bricolage-grotesque-latin-600-normal.woff2', '/fonts/bricolage-grotesque-latin-800-normal.woff2',
   '/manifest.webmanifest', '/icons/icon-192.png',
 ];
 
@@ -22,10 +26,15 @@ self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET' || u.origin !== location.origin || u.pathname.startsWith('/api/')) return;
 
   if (e.request.mode === 'navigate') {
-    e.respondWith(fetch(e.request).catch(() => caches.match('/index.html')));
+    e.respondWith(fetch(e.request).catch(() => caches.match(u.pathname === '/privacy.html' ? '/privacy.html' : '/index.html')));
     return;
   }
-  // Prima la rete, poi la copia salvata
+  // Font e librerie non cambiano: prima la copia salvata
+  if (u.pathname.startsWith('/fonts/') || u.pathname.startsWith('/vendor/')) {
+    e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request)));
+    return;
+  }
+  // Tutto il resto: prima la rete, poi la copia salvata
   e.respondWith(
     fetch(e.request)
       .then((r) => { const copia = r.clone(); caches.open(CACHE).then((c) => c.put(e.request, copia)); return r; })
