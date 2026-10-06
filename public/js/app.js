@@ -53,8 +53,12 @@ function placeQuery(p) {
 const mapsUrl = (q) => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
 const telUrl = (t) => 'tel:' + t.replace(/[^\d+]/g, '');
 const waUrl = (t) => { let n = t.replace(/\D/g, ''); if (n.startsWith('3') && n.length <= 10) n = '39' + n; return 'https://wa.me/' + n; };
-const webUrl = (u) => (/^https?:\/\//i.test(u) ? u : 'https://' + u);
-const igUrl = (h) => (/^https?:/i.test(h) ? h : 'https://instagram.com/' + h.replace(/^@/, ''));
+// Accetta solo link http/https: blocca javascript:, data: e simili (che eseguirebbero codice al clic)
+const safeUrl = (u) => {
+  try { const x = new URL(String(u == null ? '' : u).trim()); return x.protocol === 'https:' || x.protocol === 'http:' ? x.href : null; } catch { return null; }
+};
+const webUrl = (u) => safeUrl(/^https?:\/\//i.test(u) ? u : 'https://' + u) || '#';
+const igUrl = (h) => safeUrl(/^https?:\/\//i.test(h) ? h : 'https://instagram.com/' + encodeURIComponent(h.replace(/^@/, ''))) || '#';
 
 const FONTI = { instagram: 'Instagram', facebook_pagina: 'Pagina Facebook', telegram: 'Telegram', condivisione: 'Condiviso dal telefono' };
 const STATUS = { in_attesa: ['In attesa', ''], approvato: ['Pubblicato', 'ok'], rifiutato: ['Non approvato', 'no'] };
@@ -130,7 +134,7 @@ function norm(r, tipo) {
     id: r.id, type: t, title: r.titolo, desc: r.descrizione,
     start: t === 'evento' ? r.inizio : r.creato_il, end: r.fine || null,
     place: r.luogo, address: r.indirizzo, lat: r.lat, lng: r.lng, urgent: !!r.urgente,
-    author: r.autore || null, fonte: r.fonte || 'app', fonteUrl: r.fonte_url || null,
+    author: r.autore || null, fonte: r.fonte || 'app', fonteUrl: safeUrl(r.fonte_url),
     status: r.stato || 'approvato', motivo: r.motivo_rifiuto || null, ai: r.confidenza_ai,
     orig: r.testo_originale || null, created: r.creato_il, foto: r.foto_path || null,
   };
@@ -269,7 +273,7 @@ function msgAuth(e) {
 // e scrivete qui il percorso, es. '/img/torresina-hero.jpg'. Senza foto si vede l'illustrazione.
 const HERO_FOTO = '/img/torresina-hero.jpg';
 const HERO = `<figure class="hero-photo full" aria-label="Torresina, Roma">
-  ${HERO_FOTO ? `<img src="${HERO_FOTO}" alt="Il quartiere Torresina al tramonto" loading="eager" decoding="async" fetchpriority="high" onerror="this.remove()">` : ''}
+  ${HERO_FOTO ? `<img src="${HERO_FOTO}" alt="Il quartiere Torresina al tramonto" loading="eager" decoding="async" fetchpriority="high">` : ''}
   <figcaption class="hero-photo__label">Torresina · Roma XIV</figcaption></figure>`;
 
 // Illustrazioni a destra nelle card degli eventi, scelte dal titolo
@@ -623,6 +627,10 @@ function render() {
   if (!st.ready) return;
   if (view === 'proponi') keepForm();
   $('main').innerHTML = VIEWS[view]();
+  document.querySelectorAll('.hero-photo img').forEach((i) => {
+    const via = () => i.remove();
+    if (i.complete && i.naturalWidth === 0) via(); else i.addEventListener('error', via, { once: true });
+  });
   if (view === 'proponi') restoreForm();
   const tab = TAB_DI[view] || view;
   document.querySelectorAll('.tab').forEach((t) => {
@@ -1060,7 +1068,7 @@ async function submit(btn) {
       inizio: start, fine: end, luogo: place || null, indirizzo: address || null,
       lat: pos?.lat ?? null, lng: pos?.lng ?? null, foto_path: up?.path || null,
     };
-    if (form.share) { row.fonte = 'condivisione'; row.fonte_url = form.share.url || null; }
+    if (form.share) { row.fonte = 'condivisione'; row.fonte_url = safeUrl(form.share.url); }
     const { data, error } = await sb.from('posts').insert(row).select().single();
     if (error) { if (up) rimuoviFile(up.path); throw error; }
     nuovoForm({ type: t, v: {}, share: null });

@@ -28,7 +28,7 @@ netlify/functions/
   tieni-attivo.mjs       ogni giorno     evita la pausa del database gratuito
 netlify/lib/             codice condiviso: Supabase, estrazione con Claude, import
 supabase/migrations/     001 schema base, 002 import dai social, 003 attività, offerte, pop-up, galleria,
-                         004 modifica dei propri contenuti
+                         004 modifica dei propri contenuti, 005 sicurezza dei campi "fonte"
 ```
 
 ## Regole comuni a tutti i canali
@@ -184,3 +184,12 @@ Per un quartiere si parla di pochi centesimi al mese.
 - Le funzioni Netlify sincrone hanno pochi secondi a disposizione: se un webhook va in timeout,
   Meta e Telegram riprovano e il controllo dei duplicati evita doppioni.
 - Le foto dei social non vengono copiate: resta il link al post originale.
+
+## Sicurezza (005 e header)
+- Esegui una volta `supabase/migrations/005_sicurezza_fonti.sql`: `fonte_url` accetta solo indirizzi http/https e i campi
+  `fonte_*` li scrive solo il server, non l'utente.
+- In `netlify.toml` ci sono gli header di sicurezza, compresa la **Content-Security-Policy**: gli script possono arrivare
+  solo dal sito stesso. Se aggiungi un servizio esterno (mappe, analytics, font) e smette di funzionare, controlla la console
+  del browser: l'errore dice quale voce della CSP aggiornare (`connect-src` per le chiamate, `img-src` per le immagini).
+- Nel codice, ogni link che viene dai dati passa da `safeUrl()` in `app.js`. Non scrivere `onclick=`/`onerror=` nei modelli HTML:
+  la CSP li blocca, usa `addEventListener`.
